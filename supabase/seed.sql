@@ -1,5 +1,4 @@
 -- Seed data for roles, units and categories.
--- Runs automatically after migrations on `supabase db reset`.
 
 INSERT INTO roles (name, description) VALUES
     ('admin',   'Full access to all data and settings'),
