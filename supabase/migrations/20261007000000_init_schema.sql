@@ -1,8 +1,4 @@
--- Bakery inventory, production and sales schema (PostgreSQL 13+)
--- Initial schema migration.
-
-
--- 1. Users and roles ---------------------------------------------------------
+-- Users and roles 
 CREATE TABLE roles (
     id          uuid PRIMARY KEY DEFAULT gen_random_uuid(),
     name        varchar(50)  NOT NULL UNIQUE,
@@ -18,7 +14,7 @@ CREATE TABLE profiles (
     created_at  timestamptz  NOT NULL DEFAULT now()
 );
 
--- 2. Lookups -----------------------------------------------------------------
+-- Lookups 
 CREATE TABLE categories (
     id    uuid PRIMARY KEY DEFAULT gen_random_uuid(),
     name  varchar(80) NOT NULL,
@@ -34,7 +30,7 @@ CREATE TABLE units (
     base_factor  numeric(18,6) NOT NULL DEFAULT 1 CHECK (base_factor > 0)
 );
 
--- 3. Ingredients and recipes -------------------------------------------------
+-- Ingredients and recipes 
 CREATE TABLE ingredients (
     id            uuid PRIMARY KEY DEFAULT gen_random_uuid(),
     category_id   uuid         NOT NULL REFERENCES categories(id) ON DELETE RESTRICT,
@@ -65,7 +61,7 @@ CREATE TABLE recipe_ingredients (
     UNIQUE (recipe_id, ingredient_id)
 );
 
--- 4. Production and display counter ------------------------------------------
+-- Production and display counter 
 CREATE TABLE batches (
     id            uuid PRIMARY KEY DEFAULT gen_random_uuid(),
     recipe_id     uuid         NOT NULL REFERENCES recipes(id) ON DELETE RESTRICT,
@@ -91,7 +87,7 @@ CREATE TABLE display_items (
     CHECK (qty_remaining <= qty_stocked)
 );
 
--- 5. Sales -------------------------------------------------------------------
+-- Sales 
 CREATE TABLE sales (
     id             uuid PRIMARY KEY DEFAULT gen_random_uuid(),
     sold_by        uuid         NOT NULL REFERENCES profiles(id) ON DELETE RESTRICT,
@@ -109,7 +105,7 @@ CREATE TABLE sale_items (
     unit_price      numeric(12,2) NOT NULL CHECK (unit_price >= 0)
 );
 
--- 6. Indexes on foreign keys used in joins -----------------------------------
+-- Indexes on foreign keys used in joins 
 CREATE INDEX idx_profiles_role          ON profiles(role_id);
 CREATE INDEX idx_ingredients_category   ON ingredients(category_id);
 CREATE INDEX idx_recipes_category       ON recipes(category_id);
