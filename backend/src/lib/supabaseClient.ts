@@ -10,8 +10,8 @@ if (!supabaseUrl || !supabaseAnonKey) {
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-export function supabaseForUser(token) {
-  return createClient(supabaseUrl, supabaseAnonKey, {
+export function supabaseForUser(token: string) {
+  return createClient(supabaseUrl!, supabaseAnonKey!, {
     global: { headers: { Authorization: `Bearer ${token}` } },
   })
 }
