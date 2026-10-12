@@ -1,6 +1,7 @@
 import express from 'express'
 import cors from 'cors'
 import { errorHandler, notFound } from './middleware/errorHandler.js'
+import authRoutes from './modules/auth/auth.routes.js'
 
 const app = express()
 
@@ -19,6 +20,7 @@ app.get('/health', (_req, res) => {
 })
 
 // API routes: add one line per module
+app.use('/api/auth', authRoutes)
 // app.use('/api/ingredients', ingredientsRoutes)
 // app.use('/api/recipes', recipesRoutes)
 
