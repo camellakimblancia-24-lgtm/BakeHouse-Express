@@ -30,12 +30,24 @@ export default function PantryPage() {
   )
 
   return (
-    <div className="space-y-5">
-      <div className="grid gap-4 sm:grid-cols-3">
-        <StatCard icon={<Boxes />} value={items.length} label="Total ingredients" />
-        <StatCard icon={<AlertTriangle />} value={lowCount} label="Low on stock" />
-        <StatCard icon={<PackageX />} value={outCount} label="Out of stock" />
-      </div>
+    <div className="space-y-4 px-2 sm:px-4 lg:px-6">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 lg:gap-4">
+  <StatCard
+    icon={<Boxes />}
+    value={items.length}
+    label="Total ingredients"
+  />
+  <StatCard
+    icon={<AlertTriangle />}
+    value={lowCount}
+    label="Low on stock"
+  />
+  <StatCard
+    icon={<PackageX />}
+    value={outCount}
+    label="Out of stock"
+  />
+</div>
 
       {lowCount > 0 && (
         <div className="rounded-2xl border border-amber-300 bg-amber-50 px-4 py-3 font-medium text-amber-800">
@@ -43,7 +55,7 @@ export default function PantryPage() {
         </div>
       )}
 
-      <div className="flex flex-wrap items-center gap-3">
+      <div className="flex flex-col gap-4 lg:flex-row lg">
         <h1 className="mr-auto text-2xl font-extrabold text-brown">Pantry & Ingredients</h1>
         <input
           className="rounded-full border border-brown/20 bg-white/70 px-4 py-2"
@@ -60,7 +72,7 @@ export default function PantryPage() {
         </button>
       </div>
 
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap items-center gap-3">
         {tabs.map((t) => (
           <button
             key={t}
