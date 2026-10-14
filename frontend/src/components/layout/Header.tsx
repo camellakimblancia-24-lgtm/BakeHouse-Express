@@ -1,5 +1,4 @@
 import { Bell, ChevronDown, Search } from 'lucide-react'
-import NavTabs from './NavTabs'
 
 const iconButton =
   'flex h-11 w-11 items-center justify-center rounded-full bg-white/60 text-brown shadow-sm ring-1 ring-brown/10 backdrop-blur transition hover:bg-white'
@@ -14,8 +13,6 @@ export default function Header() {
           BakeHouse Express
         </span>
       </div>
-
-      <NavTabs />
 
       <div className="flex items-center gap-3">
         <button className={iconButton} aria-label="Search"><Search size={18} /></button>

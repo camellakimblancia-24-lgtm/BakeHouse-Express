@@ -28,7 +28,7 @@ export default function PantryPage() {
       i.name.toLowerCase().includes(search.toLowerCase()) &&
       (!lowOnly || i.quantity < i.reorder_level)
   )
-
+  
   return (
     <div className="space-y-4 px-2 sm:px-4 lg:px-6">
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 lg:gap-4">
