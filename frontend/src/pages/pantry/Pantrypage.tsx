@@ -28,10 +28,10 @@ export default function PantryPage() {
       i.name.toLowerCase().includes(search.toLowerCase()) &&
       (!lowOnly || i.quantity < i.reorder_level)
   )
-
+  
   return (
-    <div className="space-y-5">
-      <div className="grid gap-4 sm:grid-cols-3">
+    <div className="space--1">
+      <div className="grid gap-2 sm:grid-cols-">
         <StatCard icon={<Boxes />} value={items.length} label="Total ingredients" />
         <StatCard icon={<AlertTriangle />} value={lowCount} label="Low on stock" />
         <StatCard icon={<PackageX />} value={outCount} label="Out of stock" />
