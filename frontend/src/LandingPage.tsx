@@ -65,7 +65,7 @@ function LandingPage() {
             </button>
 
             <p className="login-link">
-              Already have an account? <a href="#">Sign in</a>
+              Already have an account? <a href="#">Log in</a>
             </p>
           </aside>
         </main>
