@@ -1,13 +1,11 @@
 import type { ReactNode } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import LandingPage from './LandingPage'
-import NavTabs from './components/layout/NavTabs'
 import PantryPage from './pages/pantry/PantryPage'
 import RecipeBatchingPage from './pages/recipes/RecipeBatchingPage'
 import CounterPage from './pages/counter/CounterPage'
 import OperationsLogsPage from './pages/logs/OperationsLogsPage'
 import Header from './components/layout/Header'
-
 
 function AppLayout({ children }: { children: ReactNode }) {
   return (
@@ -17,6 +15,7 @@ function AppLayout({ children }: { children: ReactNode }) {
     </div>
   )
 }
+
 function App() {
   return (
     <BrowserRouter>
