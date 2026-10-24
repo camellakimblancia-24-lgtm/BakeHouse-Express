@@ -1,5 +1,7 @@
 import { useState } from 'react'
-import { Cookie, Croissant, Trash2 } from 'lucide-react'
+import { Trash2 } from 'lucide-react'
+import cookieImg from '/src/assets/chocolatechip-cookie.jpg'
+import cheeseRollImg from '/src/assets/cheese-roll.jpg'
 
 interface CounterProduct {
   id: number
@@ -11,7 +13,7 @@ interface CounterProduct {
   soldToday: number
   wasteToday: number
   shelfLifeMinutes: number
-  icon: 'cookie' | 'bread'
+  image: string 
 }
 
 interface CounterMetrics {
@@ -32,7 +34,7 @@ const initialProducts: CounterProduct[] = [
     soldToday: 9,
     wasteToday: 0,
     shelfLifeMinutes: 28,
-    icon: 'cookie',
+    image: cookieImg, 
   },
   {
     id: 2,
@@ -44,7 +46,7 @@ const initialProducts: CounterProduct[] = [
     soldToday: 15,
     wasteToday: 0,
     shelfLifeMinutes: 21,
-    icon: 'bread',
+    image: cheeseRollImg,
   },
 ]
 
@@ -133,15 +135,13 @@ export default function POSScreen() {
             </p>
 
             <div className="flex items-center gap-2 py-2">
-              <div
-                aria-hidden="true"
-                className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-[#e0cfb9] text-2xl ${
-                  product.icon === 'cookie'
-                    ? 'bg-[radial-gradient(circle_at_35%_30%,#e8bd78,#a65f2d)]'
-                    : 'bg-[radial-gradient(circle_at_35%_30%,#ffe9ad,#d29a45)]'
-                }`}
-              >
-                {product.icon === 'cookie' ? <Cookie className="h-7 w-7 text-[#70421f]" /> : <Croissant className="h-7 w-7 text-[#8b541f]" />}
+              {/* 3. Replaced abstract radial-gradients with an actual HTML img element */}
+              <div className="h-12 w-12 shrink-0 overflow-hidden rounded-full border border-[#e0cfb9]">
+                <img 
+                  src={product.image} 
+                  alt={product.name} 
+                  className="h-full w-full object-cover"
+                />
               </div>
               <h2 className="text-base font-bold text-[#916b5e]">{product.name}</h2>
             </div>
