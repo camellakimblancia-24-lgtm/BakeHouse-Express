@@ -1,4 +1,5 @@
 import './App.css'
+import loginAsset from './assets/LoginAsset.png'
 
 const navItems: string[] = []
 
@@ -31,7 +32,14 @@ function LandingPage() {
           </button>
         </header>
 
-        <main className="landing-main">
+        <main
+          className="landing-main"
+          style={{
+            backgroundImage: `linear-gradient(rgba(246, 237, 222, 0.62), rgba(230, 216, 198, 0.72)), url("${loginAsset}")`,
+            backgroundPosition: 'center',
+            backgroundSize: 'cover',
+          }}
+        >
           <div className="hero-scene">
             <div className="text-banner">
               <h1>Bakehouse Express</h1>
