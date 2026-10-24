@@ -5,12 +5,13 @@ import type { Recipe } from '../../types/recipe'
 const inputClass = 'w-full rounded-lg border border-brown/30 bg-white px-3 py-2'
 const card = 'rounded-3xl bg-white/60 p-6 shadow-sm ring-1 ring-brown/10 backdrop-blur'
 
-export default function LogBatchForm({ recipes, ingredients, onLog }: {
+export default function LogBatchForm({ initialRecipeId, recipes, ingredients, onLog }: {
+  initialRecipeId?: number
   recipes: Recipe[]
   ingredients: Ingredient[]
   onLog: (recipe: Recipe, batches: number, baker: string) => void
 }) {
-  const [recipeId, setRecipeId] = useState(recipes[0]?.id ?? 0)
+  const [recipeId, setRecipeId] = useState(initialRecipeId ?? recipes[0]?.id ?? 0)
   const [batches, setBatches] = useState(1)
   const [baker, setBaker] = useState('')
 
@@ -33,7 +34,7 @@ export default function LogBatchForm({ recipes, ingredients, onLog }: {
           {recipes.map((r) => <option key={r.id} value={r.id}>{r.name}</option>)}
         </select>
         <input type="number" min={1} className={inputClass} value={batches} onChange={(e) => setBatches(Number(e.target.value))} />
-        {recipe && <p className="text-sm text-brown/70">Makes {recipe.yieldPerBatch * batches} pieces</p>}
+        {recipe && <p className="text-sm text-brown/70">Makes {recipe.yieldPerBatch * batches} {recipe.yieldLabel}</p>}
         <button
           disabled={!canSubmit}
           onClick={() => recipe && onLog(recipe, batches, baker.trim())}

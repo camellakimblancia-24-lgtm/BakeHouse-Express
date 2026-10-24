@@ -2,8 +2,9 @@ import { useEffect, useState } from 'react'
 import { getIngredients } from '../../api/ingredients'
 import { addRecipe, getBatchLogs, getRecipes, logBatch } from '../../api/recipes'
 import type { Ingredient } from '../../types/ingredients'
-import type { BatchLog, Recipe } from '../../types/recipe'
+import type { BatchLog, Recipe, RecipeCategory } from '../../types/recipe'
 import LogBatchForm from './LogBatchForm'
+import RecipeCard from './RecipeCard'
 import RecipeForm from './RecipeForm'
 
 const card = 'rounded-3xl bg-white/60 shadow-sm ring-1 ring-brown/10 backdrop-blur'
@@ -15,6 +16,8 @@ export default function RecipeBatchingPage() {
   const [logs, setLogs] = useState<BatchLog[]>([])
   const [showForm, setShowForm] = useState(false)
   const [message, setMessage] = useState('')
+  const [category, setCategory] = useState<'ALL' | RecipeCategory>('ALL')
+  const [bakeId, setBakeId] = useState<number | undefined>()
 
   const load = async () => {
     setRecipes(await getRecipes())
@@ -22,8 +25,6 @@ export default function RecipeBatchingPage() {
     setLogs(await getBatchLogs())
   }
   useEffect(() => { load() }, [])
-
-  const ing = (id: number) => ingredients.find((i) => i.id === id)
 
   return (
     <div className="space-y-5">
@@ -44,24 +45,35 @@ export default function RecipeBatchingPage() {
 
       {tab === 'recipes' && (
         <>
-          <button onClick={() => setShowForm(true)} className="rounded-full bg-brown px-5 py-2 font-bold text-cream shadow">
-            + New recipe
-          </button>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {recipes.map((r) => (
-              <div key={r.id} className={`p-5 ${card}`}>
-                <h3 className="text-lg font-extrabold text-brown">{r.name}</h3>
-                <p className="mb-2 text-sm text-brown/70">Yield: {r.yieldPerBatch} per batch</p>
-                <ul className="text-sm text-brown">
-                  {r.items.map((it) => (
-                    <li key={it.ingredientId}>• {ing(it.ingredientId)?.name}: {it.quantity} {ing(it.ingredientId)?.unit}</li>
-                  ))}
-                </ul>
-                <button onClick={() => setTab('log')} className="mt-3 text-sm font-bold text-brown underline">
-                  Make batch
+          <div className="flex flex-wrap items-center gap-2">
+            {(['ALL', 'BREAD', 'COOKIES', 'PASTRIES'] as const).map((c) => {
+              const count = c === 'ALL' ? recipes.length : recipes.filter((r) => r.category === c).length
+              return (
+                <button
+                  key={c}
+                  onClick={() => setCategory(c)}
+                  className={`rounded-full px-4 py-1.5 text-sm font-bold ${category === c ? 'bg-brown text-cream' : 'bg-brown/10 text-brown'}`}
+                >
+                  {c} <span className="font-normal opacity-70">({count})</span>
                 </button>
-              </div>
-            ))}
+              )
+            })}
+            <button onClick={() => setShowForm(true)} className="ml-auto rounded-full bg-brown px-5 py-2 font-bold text-cream shadow">
+              + New recipe
+            </button>
+          </div>
+
+          <div className="grid gap-5 lg:grid-cols-2">
+            {recipes
+              .filter((r) => category === 'ALL' || r.category === category)
+              .map((r) => (
+                <RecipeCard
+                  key={r.id}
+                  recipe={r}
+                  ingredients={ingredients}
+                  onBake={() => { setBakeId(r.id); setTab('log'); setMessage('') }}
+                />
+              ))}
           </div>
         </>
       )}
@@ -69,6 +81,8 @@ export default function RecipeBatchingPage() {
       {tab === 'log' && recipes.length > 0 && (
         <>
           <LogBatchForm
+            key={bakeId}
+            initialRecipeId={bakeId}
             recipes={recipes}
             ingredients={ingredients}
             onLog={async (recipe, batches, baker) => {
