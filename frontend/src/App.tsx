@@ -9,9 +9,9 @@ import Header from './components/layout/Header'
 
 function AppLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-cream via-orange-50 to-rose-100">
+    <div className="flex min-h-screen flex-col bg-gradient-to-br from-cream via-orange-50 to-rose-100">
       <Header />
-      <main className="px-8 pb-10">{children}</main>
+      <main className="flex flex-1 flex-col px-8 pb-10">{children}</main>
     </div>
   )
 }
