@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { signup, login, me } from './auth.controller.js'
-import { auth } from '../../middleware/auth.js'
+import { auth } from '../../middleware/auth.middleware.js'
 
 const router = Router()
 router.post('/signup', signup)

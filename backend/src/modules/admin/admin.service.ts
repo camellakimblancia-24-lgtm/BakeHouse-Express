@@ -1,5 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
-import { CreateWorkerInput } from './admin.schema.js';
+import type { CreateWorkerInput, DeleteWorkerInput } from './admin.schema.js';
 
 const supabaseAdmin = createClient(
   process.env.SUPABASE_URL!,
@@ -10,7 +10,6 @@ export class AdminService {
   static async registerWorker(input: CreateWorkerInput) {
     const { email, password, role } = input;
 
-    // Call Supabase Auth Admin API
     const { data, error } = await supabaseAdmin.auth.admin.createUser({
       email,
       password,
@@ -27,5 +26,17 @@ export class AdminService {
       email: data.user.email,
       role: data.user.user_metadata.role,
     };
+  }
+
+  static async removeWorker(input: DeleteWorkerInput) {
+    const { userId } = input;
+
+    const { error } = await supabaseAdmin.auth.admin.deleteUser(userId);
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    return { message: `User with ID ${userId} has been successfully deleted.` };
   }
 }
