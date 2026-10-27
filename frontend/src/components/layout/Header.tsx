@@ -1,4 +1,5 @@
 import { Bell, ChevronDown, Search } from 'lucide-react'
+import NavTabs from './NavTabs'
 
 const iconButton =
   'flex h-11 w-11 items-center justify-center rounded-full bg-white/60 text-brown shadow-sm ring-1 ring-brown/10 backdrop-blur transition hover:bg-white'
@@ -6,15 +7,16 @@ const iconButton =
 export default function Header() {
   return (
     <header className="flex flex-wrap items-center justify-between gap-4 px-8 py-5">
-      <div className="flex items-center gap-3">
-        {/* replace with your logo: <img src={logo} className="h-10" /> */}
+      <div className="flex shrink-0 items-center gap-3">
         <div className="h-10 w-10 rounded-full bg-gradient-to-br from-amber-300 to-orange-500" />
-        <span className="text-xl font-extrabold uppercase tracking-wide text-brown">
+        <span className="whitespace-nowrap text-xl font-extrabold uppercase tracking-wide text-brown">
           BakeHouse Express
         </span>
       </div>
 
-      <div className="flex items-center gap-3">
+      <NavTabs />
+
+      <div className="ml-auto flex shrink-0 items-center gap-3">
         <button className={iconButton} aria-label="Search"><Search size={18} /></button>
         <button className={`${iconButton} relative`} aria-label="Notifications">
           <Bell size={18} />

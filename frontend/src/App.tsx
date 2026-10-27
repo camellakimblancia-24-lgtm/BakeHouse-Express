@@ -1,22 +1,21 @@
 import type { ReactNode } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import LandingPage from './LandingPage'
-import NavTabs from './components/layout/NavTabs'
 import PantryPage from './pages/pantry/PantryPage'
 import RecipeBatchingPage from './pages/recipes/RecipeBatchingPage'
 import CounterPage from './pages/counter/CounterPage'
 import OperationsLogsPage from './pages/logs/OperationsLogsPage'
 import Header from './components/layout/Header'
 
-
 function AppLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-cream via-orange-50 to-rose-100">
+    <div className="flex min-h-screen flex-col bg-gradient-to-br from-cream via-orange-50 to-rose-100">
       <Header />
-      <main className="px-8 pb-10">{children}</main>
+      <main className="flex flex-1 flex-col px-8 pb-10">{children}</main>
     </div>
   )
 }
+
 function App() {
   return (
     <BrowserRouter>
