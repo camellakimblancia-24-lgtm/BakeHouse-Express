@@ -19,7 +19,7 @@ export default function NavTabs() {
               `whitespace-nowrap rounded-full px-4 py-2 text-sm font-medium transition-all ${
                 isActive
                   ? 'bg-white text-brown shadow-md'
-                  : 'text-brown/60 hover:bg-white/60 hover:text-brown'
+                  : 'text-brown/60 hover:bg-brown/60 hover:text-brown'
               }`
             }
           >
