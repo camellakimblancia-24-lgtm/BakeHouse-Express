@@ -4,6 +4,8 @@ import { errorHandler, notFound } from './middleware/errorHandler.js'
 import authRoutes from './modules/auth/auth.routes.js'
 import ingredientsRoutes from './modules/ingredients/ingredients.routes.js'
 import recipesRoutes from './modules/recipes/recipes.routes.js'
+import productsRoutes from './modules/products/products.routes.js'
+import ordersRoutes from './modules/orders/orders.routes.js'
 
 const app = express()
 
@@ -26,6 +28,8 @@ app.get('/health', (_req, res) => {
 app.use('/api/auth', authRoutes)
 app.use('/api/ingredients', ingredientsRoutes)
 app.use('/api/recipes', recipesRoutes)
+app.use('/api/products', productsRoutes)
+app.use('/api/orders', ordersRoutes)
 
 // These two always go last
 app.use(notFound)
