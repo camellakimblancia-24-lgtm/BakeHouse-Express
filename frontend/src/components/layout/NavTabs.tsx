@@ -1,4 +1,5 @@
 import { NavLink } from 'react-router-dom'
+import { useRole } from '../../types/roles'
 
 const tabs = [
   { to: '/pantry', label: 'Pantry & Ingredients' },
@@ -8,23 +9,27 @@ const tabs = [
 ]
 
 export default function NavTabs() {
+  const { canAccess } = useRole()
+
   return (
-    <nav className="flex items-center gap-1 rounded-full bg-white/50 p-1.5 shadow-sm ring-1 ring-brown/10 backdrop-blur">
-      {tabs.map((tab) => (
-        <NavLink
-          key={tab.to}
-          to={tab.to}
-          className={({ isActive }) =>
-            `rounded-full px-5 py-2.5 text-sm font-medium transition-all ${
-              isActive
-                ? 'bg-white text-brown shadow-md'
-                : 'text-brown/60 hover:bg-white/60 hover:text-brown'
-            }`
-          }
-        >
-          {tab.label}
-        </NavLink>
-      ))}
+    <nav>
+      <div className="flex gap-1 rounded-full bg-white/60 p-1.5 shadow-sm ring-1 ring-brown/10">
+        {tabs.filter((tab) => canAccess(tab.to)).map((tab) => (
+          <NavLink
+            key={tab.to}
+            to={tab.to}
+            className={({ isActive }) =>
+              `whitespace-nowrap rounded-full px-4 py-2 text-sm font-medium transition-all ${
+                isActive
+                  ? 'bg-white text-brown shadow-md'
+                  : 'text-brown/60 hover:bg-brown/10 hover:text-brown'
+              }`
+            }
+          >
+            {tab.label}
+          </NavLink>
+        ))}
+      </div>
     </nav>
   )
 }
