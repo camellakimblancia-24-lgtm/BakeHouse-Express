@@ -28,8 +28,8 @@ export const DEFAULT_ROUTE: Record<Role, string> = {
 
 export const STAFF: StaffUser[] = [
   { name: 'Kim Blancia', initials: 'KB', role: 'head_manager' },
-  { name: 'Chrisciel Catedrilla', initials: 'MS', role: 'baker' },
-  { name: 'Chloe Talaman', initials: 'JR', role: 'cashier' },
+  { name: 'Chrisciel Catedrilla', initials: 'CC', role: 'baker' },
+  { name: 'Chloe Talaman', initials: 'CT', role: 'cashier' },
 ]
 
 interface RoleContextValue {
