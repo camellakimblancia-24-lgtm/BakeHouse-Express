@@ -1,11 +1,12 @@
 import { Router } from 'express';
-import { createWorker, deleteWorker } from './admin.controller.js';
-import { verifyManagerOrAdmin } from '../../middleware/admin.middleware.js';
+import { createWorker, deleteWorker, updateWorkerPassword } from './admin.controller.js';
+import { verifyManager } from '../../middleware/admin.middleware.js';
 
 const router = Router();
 
 // Only managers or admins can hit this endpoint
-router.post('/workers', verifyManagerOrAdmin, createWorker);
-router.delete('/workers/:userId', verifyManagerOrAdmin, deleteWorker);
+router.post('/workers', verifyManager, createWorker);
+router.delete('/workers/:userId', verifyManager, deleteWorker);
+router.patch('/workers/:userId/password', verifyManager, updateWorkerPassword);
 
 export default router;

@@ -10,8 +10,9 @@ interface AuthRequest extends Request {
   user?: any;
 }
 
-export const verifyManagerOrAdmin = async (req: AuthRequest, res: Response, next: NextFunction) => {
+export const verifyManager = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
+    
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return res.status(401).json({ message: 'Access token missing or malformed.' });

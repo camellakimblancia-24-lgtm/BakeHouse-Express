@@ -12,5 +12,11 @@ export const deleteWorkerSchema = z.object({
     userId: z.string().uuid('Invalid user ID format.'),
 });
 
+export const updatePasswordSchema = z.object({
+  userId: z.string().uuid('Invalid user ID format.'),
+  password: z.string().min(6, 'Password must be at least 6 characters long.'),
+});
+
 export type CreateWorkerInput = z.infer<typeof createWorkerSchema>;
 export type DeleteWorkerInput = z.infer<typeof deleteWorkerSchema>;
+export type UpdatePasswordInput = z.infer<typeof updatePasswordSchema>;

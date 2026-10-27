@@ -1,5 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
-import type { CreateWorkerInput, DeleteWorkerInput } from './admin.schema.js';
+import type { CreateWorkerInput, DeleteWorkerInput, UpdatePasswordInput } from './admin.schema.js';
 
 const supabaseAdmin = createClient(
   process.env.SUPABASE_URL!,
@@ -38,5 +38,19 @@ export class AdminService {
     }
 
     return { message: `User with ID ${userId} has been successfully deleted.` };
+  }
+
+  static async updateWorkerPassword(input: UpdatePasswordInput) {
+    const { userId, password } = input;
+
+    const { error } = await supabaseAdmin.auth.admin.updateUserById(userId, {
+      password,
+    });
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    return { message: `Password for user with ID ${userId} has been successfully updated.` };
   }
 }
