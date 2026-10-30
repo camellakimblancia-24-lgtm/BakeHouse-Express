@@ -6,6 +6,7 @@ import ingredientsRoutes from './modules/ingredients/ingredients.routes.js'
 import recipesRoutes from './modules/recipes/recipes.routes.js'
 import productsRoutes from './modules/products/products.routes.js'
 import ordersRoutes from './modules/orders/orders.routes.js'
+import adminRoutes from './modules/admin/admin.routes.js'
 
 const app = express()
 
@@ -26,6 +27,7 @@ app.get('/health', (_req, res) => {
 
 // API routes: add one line per module
 app.use('/api/auth', authRoutes)
+app.use('/api/admin', adminRoutes)
 app.use('/api/ingredients', ingredientsRoutes)
 app.use('/api/recipes', recipesRoutes)
 app.use('/api/products', productsRoutes)

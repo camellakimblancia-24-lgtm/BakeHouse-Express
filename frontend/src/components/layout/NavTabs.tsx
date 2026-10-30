@@ -6,6 +6,7 @@ const tabs = [
   { to: '/recipes', label: 'Recipe Batching' },
   { to: '/counter', label: 'Display Counter & POS' },
   { to: '/logs', label: 'Operations Logs' },
+  { to: '/admin', label: 'Admin' },
 ]
 
 export default function NavTabs() {

@@ -1,11 +1,6 @@
 import type { Request, Response } from 'express'
-import { signupSchema, loginSchema } from './auth.schema.js'
+import { loginSchema } from './auth.schema.js'
 import * as service from './auth.service.js'
-
-export async function signup(req: Request, res: Response) {
-  const { email, password, fullName } = signupSchema.parse(req.body)
-  res.status(201).json({ data: await service.signUp(email, password, fullName) })
-}
 
 export async function login(req: Request, res: Response) {
   const { email, password } = loginSchema.parse(req.body)
