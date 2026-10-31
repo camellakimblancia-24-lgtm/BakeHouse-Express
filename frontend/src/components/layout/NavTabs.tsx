@@ -6,6 +6,11 @@ const tabs = [
   { to: '/recipes', label: 'Recipe Batching' },
   { to: '/counter', label: 'Display Counter & POS' },
   { to: '/logs', label: 'Operations Logs' },
+<<<<<<< HEAD
+  { to: '/staff', label: 'Staff' },
+=======
+  { to: '/admin', label: 'Admin' },
+>>>>>>> 93002391ae4867af3851746281c9b1a8421c1a26
 ]
 
 export default function NavTabs() {
@@ -21,8 +26,8 @@ export default function NavTabs() {
             className={({ isActive }) =>
               `whitespace-nowrap rounded-full px-4 py-2 text-sm font-medium transition-all ${
                 isActive
-                  ? 'bg-white text-brown shadow-md'
-                  : 'text-brown/60 hover:bg-brown/10 hover:text-brown'
+                  ? 'bg-brown text-cream shadow-md'
+                  : 'text-brown/70 hover:bg-brown/10 hover:text-brown'
               }`
             }
           >

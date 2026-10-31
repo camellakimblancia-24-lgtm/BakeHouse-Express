@@ -9,6 +9,7 @@ import RoleProvider from './context/RoleProvider'
 import Header from './components/layout/Header'
 
 import { DEFAULT_ROUTE, useRole } from './types/roles'
+import AdminPage from './pages/admin/AdminPage'
 
 function AppLayout({ children }: { children: ReactNode }) {
   return (
@@ -20,6 +21,9 @@ function AppLayout({ children }: { children: ReactNode }) {
 }
 
 function Guarded({ path, children }: { path: string; children: ReactNode }) {
+  const token = localStorage.getItem('bakehouse_auth_token')
+  if (!token) return <Navigate to="/" replace />
+
   const { user, canAccess } = useRole()
   if (!canAccess(path)) return <Navigate to={DEFAULT_ROUTE[user.role]} replace />
   return <AppLayout>{children}</AppLayout>
@@ -35,6 +39,7 @@ function App() {
           <Route path="/recipes" element={<Guarded path="/recipes"><RecipeBatchingPage /></Guarded>} />
           <Route path="/counter" element={<Guarded path="/counter"><CounterPage /></Guarded>} />
           <Route path="/logs" element={<Guarded path="/logs"><OperationsLogsPage /></Guarded>} />
+          <Route path="/admin" element={<Guarded path="/admin"><AdminPage /></Guarded>} />
         </Routes>
       </RoleProvider>
     </BrowserRouter>
