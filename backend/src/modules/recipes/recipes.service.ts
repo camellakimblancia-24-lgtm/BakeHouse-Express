@@ -1,5 +1,6 @@
 import { supabaseForUser } from '../../lib/supabaseClient.js'
 import { AppError } from '../../middleware/errorHandler.js'
+import { convert } from '../../lib/units.js'
 
 type Item = { ingredient_id: string; quantity: number; unit: string }
 type RecipeInput = {
@@ -72,4 +73,41 @@ export async function deleteRecipe(token: string, id: string) {
   const { error } = await supabaseForUser(token)
     .from('recipes').delete().eq('id', id)
   if (error) throw new AppError(400, error.message, 'DELETE_FAILED')
+}
+
+export async function getRecipeCost(token: string, id: string) {
+  const { data, error } = await supabaseForUser(token)
+    .from('recipes')
+    .select('id, name, servings, recipe_ingredients(quantity, unit, ingredients(name, unit, cost_per_unit))')
+    .eq('id', id)
+    .single()
+  if (error || !data) throw new AppError(404, 'Recipe not found', 'NOT_FOUND')
+
+  const recipe: any = data
+  const items: any[] = recipe.recipe_ingredients ?? []
+  if (!items.length)
+    throw new AppError(400, 'Recipe has no ingredients', 'NO_INGREDIENTS')
+
+  const lines = items.map((item) => {
+    const ing = item.ingredients
+    const qty = convert(Number(item.quantity), item.unit, ing.unit)
+    if (qty === null)
+      throw new AppError(
+        400,
+        `Cannot convert ${item.unit} to ${ing.unit} for ${ing.name}`,
+        'UNIT_MISMATCH'
+      )
+    const cost = qty * Number(ing.cost_per_unit)
+    return { ingredient: ing.name, quantity: item.quantity, unit: item.unit, cost: Number(cost.toFixed(2)) }
+  })
+
+  const total = lines.reduce((sum, l) => sum + l.cost, 0)
+  return {
+    recipe_id: recipe.id,
+    name: recipe.name,
+    servings: recipe.servings,
+    total_cost: Number(total.toFixed(2)),
+    cost_per_serving: Number((total / recipe.servings).toFixed(2)),
+    lines,
+  }
 }
