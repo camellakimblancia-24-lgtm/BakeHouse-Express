@@ -10,7 +10,7 @@ const CATEGORIES: RecipeCategory[] = ['BREAD', 'COOKIES', 'PASTRIES']
 
 export default function RecipeForm({ ingredients, onSave, onClose }: {
   ingredients: Ingredient[]
-  onSave: (data: Omit<Recipe, 'id'>, photo: File | null) => void
+  onSave: (data: Omit<Recipe, 'id'>, photo?: File | null) => void
   onClose: () => void
 }) {
   const [name, setName] = useState('')
@@ -29,13 +29,6 @@ export default function RecipeForm({ ingredients, onSave, onClose }: {
   const submit = () => {
     if (!name.trim()) return setError('Recipe name is required')
     if (items.some((it) => it.quantity <= 0)) return setError('Every ingredient needs a quantity above 0')
-    onSave({
-      name: name.trim(), yieldPerBatch, items,
-      category: 'BREAD',
-      bakeMinutes: 0,
-      description: '',
-      yieldLabel: ''
-    })
     onSave(
       {
         name: name.trim(),
