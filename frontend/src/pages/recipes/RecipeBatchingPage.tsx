@@ -7,6 +7,7 @@ import LogBatchForm from './LogBatchForm'
 import RecipeCard from './RecipeCard'
 import RecipeForm from './RecipeForm'
 
+
 const card = 'rounded-3xl bg-white/60 shadow-sm ring-1 ring-brown/10 backdrop-blur'
 
 export default function RecipeBatchingPage() {
