@@ -37,8 +37,5 @@
   "main": "eslint.config.js",
   "keywords": [],
   "author": "",
-  "license": "ISC",
-  "allowScripts": {
-    "esbuild@0.28.2": true
-  }
+  "license": "ISC"
 }
