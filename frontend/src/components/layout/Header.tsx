@@ -13,7 +13,7 @@ export default function Header() {
   const [open, setOpen] = useState(false)
 
   return (
-    <header className="flex flex-wrap items-center justify-between gap-4 px-8 py-5">
+    <header className="flex items-center gap-4 px-8 py-5">
       <div className="flex shrink-0 items-center gap-3">
         <div className="h-10 w-10 rounded-full bg-gradient-to-br from-amber-300 to-orange-500" />
         <span className="whitespace-nowrap text-xl font-extrabold uppercase tracking-wide text-brown">
@@ -21,9 +21,11 @@ export default function Header() {
         </span>
       </div>
 
-      <NavTabs />
+      <div className="flex flex-1 justify-center">
+        <NavTabs />
+      </div>
 
-      <div className="ml-auto flex shrink-0 items-center gap-3">
+      <div className="flex shrink-0 items-center gap-3">
         <button className={iconButton} aria-label="Search"><Search size={18} /></button>
         <button className={`${iconButton} relative`} aria-label="Notifications">
           <Bell size={18} />
