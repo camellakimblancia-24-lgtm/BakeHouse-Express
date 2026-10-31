@@ -30,7 +30,14 @@ export default function LoginPage() {
         .slice(0, 2)
         .join('')
         .toUpperCase()
-      setUser({ name: user.fullName, initials, role })
+      setUser({
+        id: email.trim(),
+        email: email.trim(),
+        name: user.fullName,
+        initials,
+        role,
+        status: 'active',
+      })
       navigate(DEFAULT_ROUTE[role])
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Incorrect email or password.')
