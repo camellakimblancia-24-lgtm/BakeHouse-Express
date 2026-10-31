@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { list, getOne, create, update, remove } from './recipes.controller.js'
-import { auth } from '../../middleware/auth.middleware.js'
+import { auth } from '../../middleware/auth.js'
 
 const router = Router()
 router.get('/', auth, list)

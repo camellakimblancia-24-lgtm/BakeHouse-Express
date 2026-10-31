@@ -6,8 +6,6 @@ const tabs = [
   { to: '/recipes', label: 'Recipe Batching' },
   { to: '/counter', label: 'Display Counter & POS' },
   { to: '/logs', label: 'Operations Logs' },
-  { to: '/staff', label: 'Staff' },
-  { to: '/admin', label: 'Admin' },
 ]
 
 export default function NavTabs() {
@@ -25,7 +23,6 @@ export default function NavTabs() {
                 isActive
                   ? 'bg-brown text-cream shadow-md'
                   : 'text-brown/60 hover:bg-brown/10 hover:text-brown'
-                  : 'text-brown/70 hover:bg-brown/10 hover:text-brown'
               }`
             }
           >

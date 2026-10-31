@@ -34,8 +34,8 @@ function LandingPage() {
         throw new Error(data.message || 'Invalid email or password.');
       }
 
-      localStorage.setItem('bakehouse_auth_token', data.token);
-      localStorage.setItem('bakehouse_user_role', data.role);
+      localStorage.setItem('auth_token', data.token);
+      localStorage.setItem('user_role', data.role);
 
       navigate('/pantry', { replace: true });
 

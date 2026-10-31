@@ -2,7 +2,6 @@ import { useState } from 'react'
 import type { Ingredient } from '../../types/ingredients'
 import type { Recipe } from '../../types/recipe'
 
-
 const inputClass = 'w-full rounded-lg border border-brown/30 bg-white px-3 py-2'
 const card = 'rounded-3xl bg-white/60 p-6 shadow-sm ring-1 ring-brown/10 backdrop-blur'
 
