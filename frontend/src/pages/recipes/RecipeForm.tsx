@@ -10,7 +10,7 @@ const CATEGORIES: RecipeCategory[] = ['BREAD', 'COOKIES', 'PASTRIES']
 
 export default function RecipeForm({ ingredients, onSave, onClose }: {
   ingredients: Ingredient[]
-  onSave: (data: Omit<Recipe, 'id'>, photo: File | null) => void
+  onSave: (data: Omit<Recipe, 'id'>, photo?: File | null) => void
   onClose: () => void
 }) {
   const [name, setName] = useState('')
