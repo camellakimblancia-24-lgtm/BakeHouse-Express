@@ -21,7 +21,13 @@ export default function RecipeForm({ ingredients, onSave, onClose }: {
   const submit = () => {
     if (!name.trim()) return setError('Recipe name is required')
     if (items.some((it) => it.quantity <= 0)) return setError('Every ingredient needs a quantity above 0')
-    onSave({ name: name.trim(), yieldPerBatch, items })
+    onSave({
+      name: name.trim(), yieldPerBatch, items,
+      category: 'BREAD',
+      bakeMinutes: 0,
+      description: '',
+      yieldLabel: ''
+    })
   }
 
   return (
