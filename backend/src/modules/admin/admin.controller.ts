@@ -22,6 +22,7 @@ export const createWorker = async (req: Request, res: Response) => {
       user: worker,
     });
   } catch (err: unknown) {
+    console.error('CRASHED IN CREATE WORKER:', err);
     return res.status(400).json({ message: (err as Error).message || 'Server error' });
   }
 };

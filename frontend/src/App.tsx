@@ -11,7 +11,6 @@ import Header from './components/layout/Header'
 import { DEFAULT_ROUTE, useRole } from './types/roles'
 import AdminPage from './pages/admin/AdminPage'
 import WorkersPage from './pages/admin/WorkerPage'
-import AddWorkerPage from './pages/admin/AddWorkerPage'
 import SetPasswordPage from './pages/SetPasswordPage.tsx'
 import AdminRoutes from './components/AdminRoutes'
 
@@ -49,7 +48,7 @@ function App() {
           <Route path="/admin" element={<Guarded path="/admin"><AdminPage /></Guarded>} />
           <Route element={<AdminRoutes />}>
             <Route path="/admin/workers" element={<Guarded path="/admin/workers"><WorkersPage /></Guarded>} />
-            <Route path="/admin/workers/new" element={<Guarded path="/admin/workers"><AddWorkerPage /></Guarded>} />
+            <Route path="/admin/workers/new" element={<Guarded path="/admin/workers"><WorkersPage initialAddModalOpen /></Guarded>} />
           </Route>
         </Routes>
       </RoleProvider>
