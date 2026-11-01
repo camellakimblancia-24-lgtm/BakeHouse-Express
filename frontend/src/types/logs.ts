@@ -1,4 +1,4 @@
-export type LogType = 'stock' | 'batch' | 'sale'
+export type LogType = 'stock' | 'batch' | 'sale' | 'waste'
 
 export interface LogEntry {
   id: number
