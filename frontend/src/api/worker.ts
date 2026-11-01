@@ -3,15 +3,19 @@ import type { Role, Worker } from '../types/worker';
 const BASE = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
 const MOCK = import.meta.env.VITE_USE_MOCK !== 'false';
 
-const mockWorkers: Worker[] = [
+let mockWorkers: Worker[] = [
   { id: '1', full_name: 'Ana Reyes', email: 'ana@example.com', role: 'baker', status: 'active' },
   { id: '2', full_name: 'Ben Cruz', email: 'ben@example.com', role: 'cashier', status: 'pending' },
 ];
 const wait = (ms = 500) => new Promise((r) => setTimeout(r, ms));
 
 async function request(path: string, options: RequestInit = {}) {
+  const token = localStorage.getItem('bakehouse_auth_token');
   const res = await fetch(`${BASE}${path}`, {
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
     credentials: 'include',
     ...options,
   });
@@ -38,6 +42,17 @@ export async function listWorkers(): Promise<Worker[]> {
 export async function resendInvite(id: string) {
   if (MOCK) { await wait(); return {}; }
   return request(`/api/workers/${id}/resend`, { method: 'POST' });
+}
+
+export async function removeWorker(id: string) {
+  if (MOCK) {
+    await wait();
+    const workerIndex = mockWorkers.findIndex((worker) => worker.id === id);
+    if (workerIndex === -1) throw new Error('Worker not found.');
+    mockWorkers = mockWorkers.filter((worker) => worker.id !== id);
+    return {};
+  }
+  return request(`/api/admin/workers/${encodeURIComponent(id)}`, { method: 'DELETE' });
 }
 
 export async function validateInvite(token: string) {
