@@ -1,10 +1,5 @@
 import type { Request, Response, NextFunction } from 'express';
-import { createClient } from '@supabase/supabase-js';
-
-const supabase = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_ANON_KEY!
-);
+import { supabase } from '../lib/supabaseClient.js';
 
 interface AuthRequest extends Request {
   user?: any;
