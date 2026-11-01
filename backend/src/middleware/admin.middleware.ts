@@ -1,10 +1,5 @@
 import type { Request, Response, NextFunction } from 'express';
-import { createClient } from '@supabase/supabase-js';
-
-const supabase = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_ANON_KEY!
-);
+import { supabaseAdmin } from '../lib/supabaseAdmin.js';
 
 interface AuthRequest extends Request {
   user?: any;
@@ -20,7 +15,7 @@ export const verifyManager = async (req: AuthRequest, res: Response, next: NextF
 
     const token = authHeader.split(' ')[1];
 
-    const { data: { user }, error } = await supabase.auth.getUser(token);
+    const { data: { user }, error } = await supabaseAdmin.auth.getUser(token);
 
     if (error || !user) {
       return res.status(401).json({ message: 'Invalid or expired token.' });
