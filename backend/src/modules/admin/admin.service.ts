@@ -1,30 +1,46 @@
-import { createClient } from '@supabase/supabase-js';
+import { supabaseAdmin } from '../../lib/supabaseAdmin.js';
 import type { CreateWorkerInput, DeleteWorkerInput, UpdatePasswordInput } from './admin.schema.js';
-
-const supabaseAdmin = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
 
 export class AdminService {
   static async registerWorker(input: CreateWorkerInput) {
-    const { email, password, role } = input;
+    const { email, role } = input;
 
-    const { data, error } = await supabaseAdmin.auth.admin.createUser({
+    const { data, error } = await supabaseAdmin.auth.admin.generateLink({
+      type: 'invite',
       email,
-      password,
-      email_confirm: true,
-      user_metadata: { role },
+      options: {
+        data: { role },
+        redirectTo: `${process.env.FRONTEND_URL || 'http://localhost:5173'}/update-password`,
+      },
     });
 
-    if (error) {
-      throw new Error(error.message);
+    if (error || !data.user) {
+      throw new Error(error?.message || 'Failed to generate invite link');
+    }
+
+    const userId = data.user.id;
+    const actionLink = data.properties?.action_link;
+
+    const { error: workerInsertError } = await supabaseAdmin
+    .from('workers')
+      .insert([
+        {
+          id: userId,
+          email: data.user.email,
+          role: role,
+          status: 'pending',
+        }
+      ])
+
+      if (workerInsertError) {
+        throw new Error(`Invite sent, but failed to create worker profile: ${workerInsertError.message}`);
     }
 
     return {
-      id: data.user.id,
+      id: userId,
       email: data.user.email,
-      role: data.user.user_metadata.role,
+      role: role,
+      actionLink,
     };
   }
 
