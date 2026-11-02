@@ -42,7 +42,7 @@ const WASTE_KEY = 'bakehouse-waste'
 const DEFAULT_PRICE: Record<RecipeCategory, number> = { BREAD: 65, COOKIES: 80, PASTRIES: 90 }
 const SHELF_LIFE: Record<RecipeCategory, number> = { BREAD: 240, COOKIES: 480, PASTRIES: 180 }
 
-const STARTING_STOCK = 12
+const STARTING_STOCK = 0
 
 function read<T>(key: string): T[] {
   try {

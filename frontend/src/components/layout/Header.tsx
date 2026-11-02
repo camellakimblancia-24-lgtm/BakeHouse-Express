@@ -50,6 +50,12 @@ export default function Header() {
     }
   }
 
+  function logout() {
+    localStorage.removeItem('bakehouse_auth_token')
+    setMenuOpen(false)
+    navigate('/')
+  }
+
   return (
     <header className="flex items-center gap-4 px-8 py-5">
       <div className="flex shrink-0 items-center gap-3">
@@ -178,6 +184,15 @@ export default function Header() {
                     </span>
                   </button>
                 ))}
+
+                <div className="mt-1 border-t border-brown/10 pt-1">
+                  <button
+                    onClick={logout}
+                    className="w-full rounded-xl px-3 py-2 text-left text-sm font-semibold text-red-700 transition hover:bg-red-50"
+                  >
+                    Log out
+                  </button>
+                </div>
               </div>
             </>
           )}
