@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { getIngredients } from '../../api/ingredients'
-import { addRecipe, getBatchLogs, getRecipes, logBatch } from '../../api/recipes'
+import { addRecipe, getBatchLogs, getRecipes } from '../../api/recipes'
+import { bakeBatch } from '../../api/production'
 import type { Ingredient } from '../../types/ingredients'
 import type { BatchLog, Recipe, RecipeCategory } from '../../types/recipe'
 import LogBatchForm from './LogBatchForm'
@@ -17,6 +18,7 @@ export default function RecipeBatchingPage() {
   const [logs, setLogs] = useState<BatchLog[]>([])
   const [showForm, setShowForm] = useState(false)
   const [message, setMessage] = useState('')
+  const [error, setError] = useState('')
   const [category, setCategory] = useState<'ALL' | RecipeCategory>('ALL')
   const [bakeId, setBakeId] = useState<number | undefined>()
 
@@ -34,7 +36,7 @@ export default function RecipeBatchingPage() {
         {(['recipes', 'log'] as const).map((t) => (
           <button
             key={t}
-            onClick={() => { setTab(t); setMessage('') }}
+            onClick={() => { setTab(t); setMessage(''); setError('') }}
             className={`rounded-full px-5 py-2 text-sm font-bold ${tab === t ? 'bg-brown text-cream' : 'bg-white/60 text-brown hover:bg-white'}`}
           >
             {t === 'recipes' ? 'Recipes' : 'Log batch'}
@@ -43,6 +45,7 @@ export default function RecipeBatchingPage() {
       </div>
 
       {message && <div className="rounded-2xl bg-green-100 px-4 py-3 font-medium text-green-800">{message}</div>}
+      {error && <div className="rounded-2xl bg-red-100 px-4 py-3 font-medium text-red-800">{error}</div>}
 
       {tab === 'recipes' && (
         <>
@@ -72,7 +75,7 @@ export default function RecipeBatchingPage() {
                   key={r.id}
                   recipe={r}
                   ingredients={ingredients}
-                  onBake={() => { setBakeId(r.id); setTab('log'); setMessage('') }}
+                  onBake={() => { setBakeId(r.id); setTab('log'); setMessage(''); setError('') }}
                 />
               ))}
           </div>
@@ -87,9 +90,17 @@ export default function RecipeBatchingPage() {
             recipes={recipes}
             ingredients={ingredients}
             onLog={async (recipe, batches, baker) => {
-              await logBatch(recipe, batches, baker)
-              setMessage(`${baker} baked ${batches} batch(es) of ${recipe.name}. Ingredients deducted.`)
-              load()
+              setMessage('')
+              setError('')
+              try {
+                const produced = await bakeBatch(recipe, batches, baker)
+                setMessage(
+                  `${baker} baked ${batches} batch(es) of ${recipe.name}. Ingredients deducted and ${produced} ${recipe.yieldLabel} added to the display counter.`,
+                )
+                load()
+              } catch (err) {
+                setError(err instanceof Error ? err.message : 'Could not log this batch.')
+              }
             }}
           />
           <div className={`overflow-x-auto ${card}`}>
