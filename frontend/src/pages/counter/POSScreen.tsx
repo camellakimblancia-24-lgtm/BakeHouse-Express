@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Trash2 } from 'lucide-react'
 import cookieImg from '/src/assets/chocolatechip-cookie.jpg'
 import cheeseRollImg from '/src/assets/cheese-roll.jpg'
+import Modal from '../../components/ui/Modal'
 import {
   getCounterOverview,
   logWaste,
@@ -10,11 +11,15 @@ import {
 } from '../../api/counter'
 import { checkout } from '../../api/sales'
 import { useRole } from '../../types/roles'
+import type { WasteReason } from '../../types/counter'
 
+// Photos for products that don't have a recipe photo yet. The key is the recipe name in lowercase.
 const PRODUCT_IMAGES: Record<string, string> = {
   'chocolate chip cookie': cookieImg,
   'cheese roll': cheeseRollImg,
 }
+
+const WASTE_REASONS: WasteReason[] = ['Unsold', 'Stale', 'Damaged']
 
 const sectionClass =
   '-mx-8 -mb-10 flex min-h-full flex-1 flex-col bg-[#f8f1dc] px-5 py-6 sm:px-8 lg:px-12'
@@ -27,27 +32,55 @@ export default function POSScreen() {
   const [overview, setOverview] = useState<CounterOverview | null>(null)
   const [error, setError] = useState('')
 
+  const [wasteTarget, setWasteTarget] = useState<CounterProduct | null>(null)
+  const [wasteQty, setWasteQty] = useState(1)
+  const [wasteReason, setWasteReason] = useState<WasteReason>('Unsold')
+  const [wasteError, setWasteError] = useState('')
+  const [wasteSaving, setWasteSaving] = useState(false)
+
   useEffect(() => {
     getCounterOverview()
       .then(setOverview)
       .catch((err: Error) => setError(err.message))
   }, [])
 
-  const run = async (action: () => Promise<unknown>) => {
+  const sellProduct = async (product: CounterProduct) => {
     setError('')
     try {
-      await action()
+      await checkout([{ productId: product.id, qty: 1 }], user.name)
       setOverview(await getCounterOverview())
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong.')
     }
   }
 
-  const sellProduct = (product: CounterProduct) =>
-    run(() => checkout([{ productId: product.id, qty: 1 }], user.name))
+  const openWaste = (product: CounterProduct) => {
+    setWasteTarget(product)
+    setWasteQty(1)
+    setWasteReason('Unsold')
+    setWasteError('')
+  }
 
-  const wasteProduct = (product: CounterProduct) =>
-    run(() => logWaste(product.id, 1, 'Unsold', user.name))
+  const canWaste =
+    !!wasteTarget &&
+    Number.isInteger(wasteQty) &&
+    wasteQty >= 1 &&
+    wasteQty <= wasteTarget.stock
+
+  const submitWaste = async () => {
+    if (!wasteTarget || !canWaste) return
+    setWasteError('')
+    setWasteSaving(true)
+    try {
+      await logWaste(wasteTarget.id, wasteQty, wasteReason, user.name)
+      setWasteTarget(null)
+      setOverview(await getCounterOverview())
+    } catch (err) {
+      setWasteError(err instanceof Error ? err.message : 'Could not log this waste.')
+    } finally {
+      setWasteSaving(false)
+    }
+  }
 
   if (!overview) {
     return (
@@ -158,9 +191,9 @@ export default function POSScreen() {
                 <button
                   type="button"
                   disabled={product.stock === 0}
-                  onClick={() => wasteProduct(product)}
+                  onClick={() => openWaste(product)}
                   className="inline-flex items-center gap-1 text-[10px] text-[#916b5e] transition hover:text-[#81431f] disabled:cursor-not-allowed disabled:opacity-50"
-                  aria-label={`Log one ${product.name} as waste`}
+                  aria-label={`Log ${product.name} as waste`}
                 >
                   <Trash2 className="h-3 w-3" />
                   Log Waste
@@ -170,6 +203,53 @@ export default function POSScreen() {
           )
         })}
       </div>
+
+      {wasteTarget && (
+        <Modal title={`Log waste: ${wasteTarget.name}`} onClose={() => setWasteTarget(null)}>
+          <div className="space-y-3">
+            <p className="text-sm text-brown">{wasteTarget.stock} units on the counter</p>
+
+            <input
+              type="number"
+              min={1}
+              max={wasteTarget.stock}
+              className="w-full rounded-lg border border-brown/30 bg-white px-3 py-2"
+              placeholder="Quantity"
+              value={wasteQty}
+              onChange={(e) => setWasteQty(Number(e.target.value))}
+            />
+
+            <div className="flex gap-2">
+              {WASTE_REASONS.map((reason) => (
+                <button
+                  key={reason}
+                  type="button"
+                  onClick={() => setWasteReason(reason)}
+                  className={`flex-1 rounded-lg py-2 text-sm font-semibold ${
+                    wasteReason === reason ? 'bg-brown text-cream' : 'bg-brown/10 text-brown'
+                  }`}
+                >
+                  {reason}
+                </button>
+              ))}
+            </div>
+
+            {wasteQty > wasteTarget.stock && (
+              <p className="text-sm text-red-600">Only {wasteTarget.stock} on the counter.</p>
+            )}
+            {wasteError && <p className="text-sm text-red-600">{wasteError}</p>}
+
+            <button
+              type="button"
+              disabled={!canWaste || wasteSaving}
+              onClick={submitWaste}
+              className="w-full rounded-lg bg-brown py-2 font-semibold text-cream disabled:opacity-40"
+            >
+              {wasteSaving ? 'Saving...' : 'Confirm'}
+            </button>
+          </div>
+        </Modal>
+      )}
     </section>
   )
 }
