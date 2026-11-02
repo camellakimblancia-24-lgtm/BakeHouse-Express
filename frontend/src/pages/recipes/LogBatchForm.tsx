@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { Ingredient } from '../../types/ingredients'
 import type { Recipe } from '../../types/recipe'
+import { useRole } from '../../types/roles'
 
 
 const inputClass = 'w-full rounded-lg border border-brown/30 bg-white px-3 py-2'
@@ -12,9 +13,10 @@ export default function LogBatchForm({ initialRecipeId, recipes, ingredients, on
   ingredients: Ingredient[]
   onLog: (recipe: Recipe, batches: number, baker: string) => void
 }) {
+  const { user } = useRole()
   const [recipeId, setRecipeId] = useState(initialRecipeId ?? recipes[0]?.id ?? 0)
   const [batches, setBatches] = useState(1)
-  const [baker, setBaker] = useState('')
+  const [baker, setBaker] = useState(user.name)
 
   const recipe = recipes.find((r) => r.id === recipeId)
   const rows = (recipe?.items ?? []).map((it) => {
@@ -24,7 +26,7 @@ export default function LogBatchForm({ initialRecipeId, recipes, ingredients, on
     return { id: it.ingredientId, name: ing?.name ?? '?', unit: ing?.unit ?? '', needed, stock, short: stock < needed }
   })
   const hasShortage = rows.some((r) => r.short)
-  const canSubmit = !!recipe && batches >= 1 && baker.trim() !== '' && !hasShortage
+  const canSubmit = !!recipe && Number.isInteger(batches) && batches >= 1 && baker.trim() !== '' && !hasShortage
 
   return (
     <div className="grid gap-6 lg:grid-cols-2">

@@ -15,7 +15,7 @@ function getAlerts(ingredients: Ingredient[]): StockAlert[] {
   const alerts: StockAlert[] = []
   for (const ingredient of ingredients) {
     if (ingredient.quantity <= 0) alerts.push({ ingredient, level: 'out' })
-    else if (ingredient.quantity <= ingredient.reorder_level) alerts.push({ ingredient, level: 'low' })
+    else if (ingredient.quantity < ingredient.reorder_level) alerts.push({ ingredient, level: 'low' })
   }
   return alerts.sort((a, b) => (a.level === b.level ? 0 : a.level === 'out' ? -1 : 1))
 }
@@ -29,13 +29,17 @@ export default function Header() {
 
   useEffect(() => {
     let active = true
-    getIngredients()
-      .then((list) => {
-        if (active) setAlerts(getAlerts(list))
-      })
-      .catch(() => {})
+    const refresh = () =>
+      getIngredients()
+        .then((list) => {
+          if (active) setAlerts(getAlerts(list))
+        })
+        .catch(() => {})
+    refresh()
+    window.addEventListener('bakehouse-stock-changed', refresh)
     return () => {
       active = false
+      window.removeEventListener('bakehouse-stock-changed', refresh)
     }
   }, [])
 
