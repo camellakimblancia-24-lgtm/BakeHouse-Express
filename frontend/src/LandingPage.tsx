@@ -2,6 +2,8 @@ import './App.css'
 import loginAsset from './assets/LoginAsset.png'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import logo from './assets/logo.png'
+
 
 const navItems: string[] = []
 
@@ -51,9 +53,7 @@ function LandingPage() {
       <div className="landing-page-card">
         <header className="landing-topbar">
           <div className="brand-block" aria-label="Bakery Shop brand">
-            <div className="brand-icon" aria-hidden="true">
-              <span className="brand-icon-inner" />
-            </div>
+            <img src={logo} alt="BakeHouse Express logo" className="h-10 w-10 rounded-full object-cover" />
             <div className="brand-name">
               <span>BAKEHOUSE EXPRESS</span>
             </div>
