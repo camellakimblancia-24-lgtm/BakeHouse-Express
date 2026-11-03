@@ -2,16 +2,19 @@ import { useState } from 'react'
 import Modal from '../../components/ui/Modal'
 import type { Ingredient } from '../../types/ingredients'
 
+type AdjustReason = 'delivery' | 'spoiled'
+
 export default function StockAdjustModal({ ingredient, onSave, onClose }: {
   ingredient: Ingredient
-  onSave: (change: number) => void
+  onSave: (change: number, reason: AdjustReason) => void
   onClose: () => void
 }) {
-  const [type, setType] = useState<'delivery' | 'spoiled'>('delivery')
+  const [type, setType] = useState<AdjustReason>('delivery')
   const [qty, setQty] = useState(0)
 
   const change = type === 'delivery' ? qty : -qty
-  const after = Math.max(0, ingredient.quantity + change)
+  const tooMuch = type === 'spoiled' && qty > ingredient.quantity
+  const after = Math.round((ingredient.quantity + change) * 100) / 100
 
   return (
     <Modal title={`Adjust stock: ${ingredient.name}`} onClose={onClose}>
@@ -28,18 +31,24 @@ export default function StockAdjustModal({ ingredient, onSave, onClose }: {
           ))}
         </div>
         <input
-          type="number" min={0}
+          type="number" min={0} step="any"
           className="w-full rounded-lg border border-brown/30 bg-white px-3 py-2"
           placeholder={`Quantity (${ingredient.unit})`}
           value={qty}
           onChange={(e) => setQty(Number(e.target.value))}
         />
-        <p className="text-sm text-brown">
-          {ingredient.name}: {ingredient.quantity} {ingredient.unit} → <b>{after} {ingredient.unit}</b>
-        </p>
+        {tooMuch ? (
+          <p className="text-sm text-red-600">
+            Only {ingredient.quantity} {ingredient.unit} in stock.
+          </p>
+        ) : (
+          <p className="text-sm text-brown">
+            {ingredient.name}: {ingredient.quantity} {ingredient.unit} → <b>{after} {ingredient.unit}</b>
+          </p>
+        )}
         <button
-          disabled={qty <= 0}
-          onClick={() => onSave(change)}
+          disabled={qty <= 0 || tooMuch}
+          onClick={() => onSave(change, type)}
           className="w-full rounded-lg bg-brown py-2 font-semibold text-cream disabled:opacity-40"
         >
           Confirm

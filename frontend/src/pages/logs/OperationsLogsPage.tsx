@@ -1,36 +1,40 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { getLogs } from '../../api/logs'
 import type { LogEntry, LogType } from '../../types/logs'
-
-const logs: LogEntry[] = [
-  { id: 1, time: '2026-10-27T08:15:00', type: 'stock', description: 'Adjusted Butter stock', user: 'Kim Blancia', change: '+5 kg' },
-  { id: 2, time: '2026-10-27T09:40:00', type: 'batch', description: 'Logged 3 batches of Pandesal', user: 'Kim Blancia', change: '-6 kg Flour' },
-  { id: 3, time: '2026-10-27T10:05:00', type: 'sale', description: 'Sold 4 Ensaymada', user: 'Counter', change: '-4 pcs' },
-  { id: 4, time: '2026-10-27T11:30:00', type: 'stock', description: 'Marked Milk as low stock', user: 'Kim Blancia', change: '-2 L' },
-  { id: 5, time: '2026-10-27T13:10:00', type: 'sale', description: 'Sold 2 Cinnamon Rolls', user: 'Counter', change: '-2 pcs' },
-]
 
 const filters: { value: 'all' | LogType; label: string }[] = [
   { value: 'all', label: 'All' },
   { value: 'stock', label: 'Stock' },
   { value: 'batch', label: 'Batches' },
   { value: 'sale', label: 'Sales' },
+  { value: 'waste', label: 'Waste' },
 ]
 
 const badgeStyles: Record<LogType, string> = {
   stock: 'bg-amber-100 text-amber-800',
   batch: 'bg-orange-100 text-orange-800',
   sale: 'bg-emerald-100 text-emerald-800',
+  waste: 'bg-red-100 text-red-700',
 }
 
 const badgeLabels: Record<LogType, string> = {
   stock: 'Stock',
   batch: 'Batch',
   sale: 'Sale',
+  waste: 'Waste',
 }
 
 export default function OperationsLogsPage() {
+  const [logs, setLogs] = useState<LogEntry[]>([])
+  const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState<'all' | LogType>('all')
   const [search, setSearch] = useState('')
+
+  useEffect(() => {
+    getLogs()
+      .then(setLogs)
+      .finally(() => setLoading(false))
+  }, [])
 
   const visible = useMemo(() => {
     const term = search.trim().toLowerCase()
@@ -42,7 +46,7 @@ export default function OperationsLogsPage() {
         log.user.toLowerCase().includes(term)
       return matchesType && matchesSearch
     })
-  }, [filter, search])
+  }, [logs, filter, search])
 
   return (
     <section className="space-y-6">
@@ -105,7 +109,14 @@ export default function OperationsLogsPage() {
                 <td className="whitespace-nowrap px-6 py-4 text-right font-semibold">{log.change}</td>
               </tr>
             ))}
-            {visible.length === 0 && (
+            {loading && (
+              <tr>
+                <td colSpan={5} className="px-6 py-10 text-center text-brown/60">
+                  Loading logs...
+                </td>
+              </tr>
+            )}
+            {!loading && visible.length === 0 && (
               <tr>
                 <td colSpan={5} className="px-6 py-10 text-center text-brown/60">
                   No logs match your filters.
