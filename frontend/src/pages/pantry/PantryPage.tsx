@@ -32,7 +32,7 @@ export default function PantryPage() {
   )
   
   return (
-    <div className="space-y-4 px-2 sm:px-4 lg:px-6">
+    <div className="space-y-4">
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 lg:gap-4">
   <StatCard
     icon={<Boxes />}

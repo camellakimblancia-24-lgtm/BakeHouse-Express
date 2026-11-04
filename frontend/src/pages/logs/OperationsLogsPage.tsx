@@ -57,7 +57,7 @@ export default function OperationsLogsPage() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search logs..."
-          className="w-64 rounded-full bg-white/60 px-5 py-3 text-sm text-brown shadow-sm ring-1 ring-brown/10 outline-none placeholder:text-brown/50 focus:bg-white"
+          className="w-full rounded-full bg-white/60 px-5 py-3 text-sm text-brown shadow-sm ring-1 ring-brown/10 outline-none placeholder:text-brown/50 focus:bg-white sm:w-64"
         />
       </div>
 

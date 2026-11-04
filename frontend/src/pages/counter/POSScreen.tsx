@@ -13,7 +13,6 @@ import { checkout } from '../../api/sales'
 import { useRole } from '../../types/roles'
 import type { WasteReason } from '../../types/counter'
 
-// Photos for products that don't have a recipe photo yet. The key is the recipe name in lowercase.
 const PRODUCT_IMAGES: Record<string, string> = {
   'chocolate chip cookie': cookieImg,
   'cheese roll': cheeseRollImg,
@@ -22,7 +21,7 @@ const PRODUCT_IMAGES: Record<string, string> = {
 const WASTE_REASONS: WasteReason[] = ['Unsold', 'Stale', 'Damaged']
 
 const sectionClass =
-  '-mx-8 -mb-10 flex min-h-full flex-1 flex-col bg-[#f8f1dc] px-5 py-6 sm:px-8 lg:px-12'
+  'flex flex-col rounded-3xl bg-[#f8f1dc] px-5 py-6 shadow-sm ring-1 ring-brown/10 sm:px-8 lg:px-10'
 
 const formatPeso = (amount: number) =>
   `₱ ${amount.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
