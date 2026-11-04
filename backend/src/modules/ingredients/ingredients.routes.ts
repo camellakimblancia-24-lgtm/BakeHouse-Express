@@ -1,14 +1,10 @@
 import { Router } from 'express'
-import { getIngredient, getIngredientsById, createIngredient, updateIngredient, deleteIngredient } from './ingredients.controller.js'
+import { list, create, update, remove } from './ingredients.controller.js'
 import { auth } from '../../middleware/auth.middleware.js'
 
 const router = Router()
-
-// para kumpleto ang crud
-router.get('/', auth, getIngredient)
-router.get('/:id', auth, getIngredientsById)
-router.post('/', auth, createIngredient)
-router.patch('/:id', auth, updateIngredient)
-router.delete('/:id', auth, deleteIngredient)
-
+router.get('/', auth, list)
+router.post('/', auth, create)
+router.patch('/:id', auth, update)
+router.delete('/:id', auth, remove)
 export default router

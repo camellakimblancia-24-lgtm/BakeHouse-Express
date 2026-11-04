@@ -1,88 +1,86 @@
-import type { CreateIngredientPayload, Ingredient, UpdateIngredientPayload } from '../types/ingredients'
+import type { Ingredient } from '../types/ingredients'
 
-const INGREDIENTS_API_URL = 'http://localhost:3000/api/ingredients'
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000'
 
-async function handleResponse(response: Response) {
-  const text = await response.text();
-  let data;
+// const seed: Ingredient[] = [
+//   { id: 1, name: 'Butter', category: 'DAIRY', unit: 'kg', quantity: 4, reorder_level: 5 },
+//   { id: 2, name: 'Milk', category: 'DAIRY', unit: 'L', quantity: 12, reorder_level: 6 },
+//   { id: 3, name: 'Flour', category: 'DRY_GOODS', unit: 'kg', quantity: 30, reorder_level: 10 },
+//   { id: 4, name: 'Sugar', category: 'DRY_GOODS', unit: 'kg', quantity: 0, reorder_level: 8 },
+//   { id: 5, name: 'Apples', category: 'PRODUCE', unit: 'kg', quantity: 6, reorder_level: 4 },
+//   { id: 6, name: 'Cake box', category: 'PACKAGING', unit: 'pcs', quantity: 40, reorder_level: 50 },
+//   { id: 7, name: 'Sea Salt', category: 'DRY_GOODS', unit: 'kg', quantity: 2, reorder_level: 0.5 },
+// ]
 
-  try {
-    data = text ? JSON.parse(text) : {};
-  } catch (error) {
-    throw new Error(`Server returned invalid response: ${text || response.statusText}`);
+function getAuthHeaders(): HeadersInit {
+  const session = localStorage.getItem('bakehouse_auth_token')
+  let token = ''
+  if (session) {
+    try {
+      const parsed = JSON.parse(session)
+      token = parsed.access_token || parsed
+    } catch {
+      token = session
+    }
   }
 
-  if (!response.ok) {
-    throw new Error(data.message || `Request failed with status ${response.status}`);
+  return {
+    'Content-Type': 'application/json',
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
   }
-
-  return data;
 }
 
-export const ingredientsApi = {
-  async getIngredients(token: string): Promise<Ingredient[]> {
-    const response = await fetch(`${INGREDIENTS_API_URL}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-      },
-    });
-
-    const data = await handleResponse(response);
-    return data.data;
-  },
-
-  async getIngredientById(token: string, id: string): Promise<Ingredient> {
-    const response = await fetch(`${INGREDIENTS_API_URL}/${id}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-      },
-    });
-
-    const data = await handleResponse(response);
-    return data.data;
-  },
-
-  async createIngredient(token: string, payload: CreateIngredientPayload): Promise<Ingredient> {
-    const response = await fetch(`${INGREDIENTS_API_URL}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-      },
-      body: JSON.stringify(payload),
-    });
-
-    const data = await handleResponse(response);
-    return data.data;
-  },
-
-  async updateIngredient(token: string, id: string, payload: Partial<UpdateIngredientPayload>): Promise<Ingredient> {
-    const response = await fetch(`${INGREDIENTS_API_URL}/${id}`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-      },
-      body: JSON.stringify(payload),
-    });
-
-    const data = await handleResponse(response);
-    return data.data;
-  },
-
-  async deleteIngredient(token: string, id: string): Promise<void> {
-    const response = await fetch(`${INGREDIENTS_API_URL}/${id}`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-      },
-    });
-
-    await handleResponse(response);
+export async function getIngredients(): Promise<Ingredient[]> {
+  const res = await fetch(`${API_URL}/api/ingredients`, {
+    headers: getAuthHeaders(),
+  })
+  
+  if (!res.ok) {
+    const errData = await res.json().catch(() => ({}))
+    throw new Error(errData.error?.message || 'Failed to fetch ingredients')
   }
-};
+
+  const json = await res.json()
+  return json.data || json
+}
+
+export async function addIngredient(data: Omit<Ingredient, 'id'>) {
+  const res = await fetch(`${API_URL}/api/ingredients`, {
+    method: 'POST',
+    headers: getAuthHeaders(),
+    body: JSON.stringify(data),
+  })
+
+  if (!res.ok) {
+    const errData = await res.json().catch(() => ({}))
+    throw new Error(errData.error?.message || 'Failed to add ingredient')
+  }
+
+  const json = await res.json()
+  return json.data || json
+}
+
+export async function adjustStock(
+  id: string | number, // Supports both UUID strings and number IDs
+  change: number,
+  options?: { reason?: 'delivery' | 'spoiled'; user?: string },
+) {
+  const res = await fetch(`${API_URL}/api/inventory/movements`, {
+    method: 'POST',
+    headers: getAuthHeaders(),
+    body: JSON.stringify({
+      ingredient_id: id,
+      change,
+      reason: options?.reason,
+      user: options?.user ?? 'Staff',
+    }),
+  })
+
+  if (!res.ok) {
+    const errData = await res.json().catch(() => ({}))
+    throw new Error(errData.error?.message || 'Failed to adjust stock')
+  }
+
+  const json = await res.json()
+  return json.data || json
+}

@@ -1,62 +1,36 @@
-import { supabaseAdmin } from '../../lib/supabaseAdmin.js'
+import { supabaseForUser } from '../../lib/supabaseClient.js'
 import { AppError } from '../../middleware/errorHandler.js'
-import type { CreateIngredientInput, UpdateIngredientInput } from './ingredients.schema.js'
 
-export class IngredientService {
-
-  static async getAllIngredient() {
-
-  const { data, error } = await supabaseAdmin
-    .from('ingredients')
-    .select('*')
-    .order('name', { ascending: true })
-
-  if (error) throw new Error(error.message);
+export async function listIngredients(token: string) {
+  const { data, error } = await supabaseForUser(token)
+    .from('ingredients').select('*').order('name')
+  if (error) throw new AppError(400, error.message, 'FETCH_FAILED')
   return data
-  }
-
-  static async getIngredientById(id: string) {
-  const { data, error } = await supabaseAdmin
-    .from('ingredients')
-    .select('*')
-    .eq('id', id)
-    .single();
-
-    if (error || !data) throw new Error('Ingredient not found');
-    return data;
-  }
-
-  static async createIngredient(input: CreateIngredientInput) {
-    const { data, error } = await supabaseAdmin
-      .from('ingredients')
-      .insert([input])
-      .select()
-      .single();
-
-  if (error) throw new Error(error.message);
-  return data
-  }
-
-  static async updateIngredient(id: string, input: UpdateIngredientInput) {
-    const { data, error } = await supabaseAdmin
-      .from('ingredients')
-      .update(input)
-      .eq('id', id)
-      .select()
-      .single();
-    
-      if (error) throw new Error(error.message);
-      return data
-  }
-
-  static async deleteIngredient(id: string) {
-    const { error } = await supabaseAdmin
-      .from('ingredients')
-      .delete()
-      .eq('id', id);
-
-    if (error) throw new Error(error.message);
-    return true
-  }
 }
 
+export async function createIngredient(
+  token: string,
+  input: { name: string; quantity: number; unit: string }
+) {
+  const { data, error } = await supabaseForUser(token)
+    .from('ingredients').insert(input).select().single()
+  if (error) throw new AppError(400, error.message, 'CREATE_FAILED')
+  return data
+}
+
+export async function updateIngredient(
+  token: string,
+  id: string,
+  input: { name?: string; quantity?: number; unit?: string }
+) {
+  const { data, error } = await supabaseForUser(token)
+    .from('ingredients').update(input).eq('id', id).select().single()
+  if (error) throw new AppError(400, error.message, 'UPDATE_FAILED')
+  return data
+}
+
+export async function deleteIngredient(token: string, id: string) {
+  const { error } = await supabaseForUser(token)
+    .from('ingredients').delete().eq('id', id)
+  if (error) throw new AppError(400, error.message, 'DELETE_FAILED')
+}

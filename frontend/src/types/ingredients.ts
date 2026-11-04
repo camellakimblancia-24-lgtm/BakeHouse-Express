@@ -1,26 +1,11 @@
-export const CATEGORIES = ['DAIRY', 'DRY_GOODS', 'PRODUCE', 'PACKAGING'] as const;
-export type IngredientCategory = typeof CATEGORIES[number];
+export type Category = 'DAIRY' | 'DRY_GOODS' | 'PRODUCE' | 'PACKAGING'
 
 export interface Ingredient {
-  id: string;
-  name: string;
-  quantity: number;
-  unit: string;
-  reorder_level: number;
-  supplier_id?: string | null;
-  cost_per_unit: number;
-  category: IngredientCategory;
-  created_at?: string;
+  id: number
+  name: string
+  category: Category
+  unit: string
+  quantity: number
+  reorder_level: number
+  image?: string
 }
-
-export interface CreateIngredientPayload {
-  name: string;
-  quantity: number;
-  unit: string;
-  reorder_level: number;
-  supplier_id?: string | null;
-  cost_per_unit: number;
-  category: IngredientCategory;
-}
-
-export type UpdateIngredientPayload = Partial<CreateIngredientPayload>;
