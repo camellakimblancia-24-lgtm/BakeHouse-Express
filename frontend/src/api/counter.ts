@@ -39,17 +39,15 @@ const PRODUCTS_KEY = 'bakehouse-products'
 const EVENTS_KEY = 'bakehouse-counter-events'
 const WASTE_KEY = 'bakehouse-waste'
 
-const DEFAULT_PRICE: Record<RecipeCategory, number> = { BREAD: 65, COOKIES: 80, PASTRIES: 90 }
-const SHELF_LIFE: Record<RecipeCategory, number> = { BREAD: 240, COOKIES: 480, PASTRIES: 180 }
-
-const STARTING_STOCK = 12
+const DEFAULT_PRICE: Record<RecipeCategory, number> = { BREAD: 65, COOKIES: 80, PASTRIES: 90, CAKES: 950 }
+const SHELF_LIFE: Record<RecipeCategory, number> = { BREAD: 240, COOKIES: 480, PASTRIES: 180, CAKES: 7 }
 
 function read<T>(key: string): T[] {
   try {
     const raw = localStorage.getItem(key)
     if (raw) return JSON.parse(raw) as T[]
   } catch {
-    
+    return []
   }
   return []
 }
@@ -82,22 +80,21 @@ export function recordEvent(type: EventType, productId: number, qty: number, amo
 }
 
 export async function getProducts(): Promise<Product[]> {
-  const stored = read<Product>(PRODUCTS_KEY)
   const recipes = await getRecipes()
+  const savedProducts = read<Product>(PRODUCTS_KEY)
+  const stored = savedProducts.filter((p) => recipes.some((r) => r.id === p.recipeId))
 
   const missing = recipes.filter((r) => !stored.some((p) => p.recipeId === r.id))
-  if (missing.length === 0) return stored
+  if (missing.length === 0 && stored.length === savedProducts.length) return stored
 
-  const startStock = stored.length === 0 ? STARTING_STOCK : 0
-  let id = nextId(stored)
+  let id = nextId(savedProducts)
   const added: Product[] = missing.map((r) => ({
     id: id++,
     recipeId: r.id,
     name: r.name,
     price: DEFAULT_PRICE[r.category] ?? 65,
-    stock: startStock,
+    stock: 0,
   }))
-  if (startStock > 0) added.forEach((p) => recordEvent('bake', p.id, p.stock))
 
   const all = [...stored, ...added]
   saveProducts(all)

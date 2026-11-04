@@ -18,7 +18,6 @@ function load(): Ingredient[] {
     const raw = localStorage.getItem(KEY)
     if (raw) return JSON.parse(raw) as Ingredient[]
   } catch {
-    // fall back to the starting ingredients below
   }
   return seed
 }

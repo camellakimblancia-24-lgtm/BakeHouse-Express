@@ -1,11 +1,12 @@
-import { Flame } from 'lucide-react'
+import { Flame, Trash2 } from 'lucide-react'
 import type { Ingredient } from '../../types/ingredients'
 import type { Recipe } from '../../types/recipe'
 
-export default function RecipeCard({ recipe, ingredients, onBake }: {
+export default function RecipeCard({ recipe, ingredients, onBake, onDelete }: {
   recipe: Recipe
   ingredients: Ingredient[]
   onBake: () => void
+  onDelete?: () => void
 }) {
   const ing = (id: number) => ingredients.find((i) => i.id === id)
 
@@ -13,9 +14,9 @@ export default function RecipeCard({ recipe, ingredients, onBake }: {
     <div className="rounded-3xl border border-brown/40 bg-cream/70 p-5 shadow-sm">
       <div className="flex gap-4">
         {recipe.image ? (
-          <img src={recipe.image} alt={recipe.name} className="h-20 w-20 rounded-full object-cover" />
+          <img src={recipe.image} alt={recipe.name} className="h-20 w-20 shrink-0 rounded-full object-cover" />
         ) : (
-          <div className="flex h-20 w-20 items-center justify-center rounded-full bg-brown/10 text-2xl font-bold text-brown">
+          <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-brown/10 text-2xl font-bold text-brown">
             {recipe.name[0]}
           </div>
         )}
@@ -43,7 +44,16 @@ export default function RecipeCard({ recipe, ingredients, onBake }: {
         ))}
       </ul>
 
-      <div className="mt-4 flex justify-end border-t border-brown/30 pt-3">
+      <div className="mt-4 flex items-center justify-end gap-3 border-t border-brown/30 pt-3">
+        {onDelete && (
+          <button
+            onClick={onDelete}
+            aria-label={`Delete ${recipe.name}`}
+            className="flex items-center gap-1.5 rounded-full border border-red-300 px-4 py-1.5 text-xs font-bold text-red-700 transition hover:bg-red-50"
+          >
+            <Trash2 size={14} /> Delete
+          </button>
+        )}
         <button onClick={onBake} className="flex items-center gap-1.5 rounded-full bg-brown px-4 py-1.5 text-xs font-bold text-cream">
           <Flame size={14} /> Bake This Recipe
         </button>
