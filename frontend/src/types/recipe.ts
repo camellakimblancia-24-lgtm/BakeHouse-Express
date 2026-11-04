@@ -1,8 +1,8 @@
-export type RecipeCategory = 'BREAD' | 'COOKIES' | 'PASTRIES'
+export type RecipeCategory = 'BREAD' | 'COOKIES' | 'PASTRIES' | 'CAKES'
 
 export interface RecipeItem {
   ingredientId: number
-  quantity: number // per 1 batch, in the ingredient's unit
+  quantity: number 
 }
 
 export interface Recipe {
