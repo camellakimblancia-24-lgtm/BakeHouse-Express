@@ -1,22 +1,53 @@
 import type { Response } from 'express'
-import { ingredientSchema, ingredientUpdateSchema } from './ingredients.schema.js'
-import * as service from './ingredients.service.js'
+import { createIngredientSchema, updateIngredientSchema } from './ingredients.schema.js'
+import { IngredientService } from './ingredients.service.js'
 
-export async function list(req: any, res: Response) {
-  res.json({ data: await service.listIngredients(req.token) })
+export const getIngredient = async (req: any, res: Response) => {
+  try {
+    const ingredient = await IngredientService.getAllIngredient();
+    return res.status(200).json({ success: true, data: ingredient });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: (error as Error).message });
+  }
 }
 
-export async function create(req: any, res: Response) {
-  const input = ingredientSchema.parse(req.body)
-  res.status(201).json({ data: await service.createIngredient(req.token, input) })
+export const getIngredientsById = async (req: any, res: Response) => {
+  try {
+    const { id } = req.params;
+    const ingredient = await IngredientService.getIngredientById(id);
+    return res.status(200).json({ success: true, data: ingredient });
+  } catch (error) {
+    return res.status(404).json({ success: false, message: (error as Error).message });
+  }
 }
 
-export async function update(req: any, res: Response) {
-  const input = ingredientUpdateSchema.parse(req.body)
-  res.json({ data: await service.updateIngredient(req.token, req.params.id, input) })
+export const createIngredient = async (req: any, res: Response) => {
+  try {
+    const validatedData = createIngredientSchema.parse(req.body);
+    const newIngredient = await IngredientService.createIngredient(validatedData);
+    return res.status(201).json({ success: true, message: 'Ingredient created successfully', data: newIngredient });
+  } catch (error) {
+    return res.status(400).json({ success: false, message: (error as Error).message });
+  }
 }
 
-export async function remove(req: any, res: Response) {
-  await service.deleteIngredient(req.token, req.params.id)
-  res.status(204).send()
+export const updateIngredient = async (req: any, res: Response) => {
+  try {
+    const { id } = req.params;
+    const validateData = updateIngredientSchema.parse(req.body);
+    const updatedIngredient = await IngredientService.updateIngredient(id, validateData);
+    return res.status(200).json({ success: true, message: 'Ingredient updated successfully', data: updatedIngredient });
+  } catch (error) {
+    return res.status(400).json({ success: false, message: (error as Error).message });
+  }
+}
+
+export const deleteIngredient = async (req: any, res: Response) => {
+  try {
+    const { id } = req.params;
+    await IngredientService.deleteIngredient(id);
+    return res.status(200).json({ success: true, message: 'Ingredient deleted successfully' });
+  } catch (error) {
+    return res.status(400).json({ success: false, message: (error as Error).message });
+  }
 }
