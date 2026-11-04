@@ -4,12 +4,14 @@ import { addIngredient, adjustStock, getIngredients } from '../../api/ingredient
 import StockBadge from '../../components/ui/StockBadge'
 import StatCard from '../../components/ui/StatCard'
 import type { Category, Ingredient } from '../../types/ingredients'
+import { useRole } from '../../types/roles'
 import IngredientForm from './IngredientForm'
 import StockAdjustModal from './StockAdjustModal'
 
 const tabs: ('ALL' | Category)[] = ['ALL', 'DAIRY', 'DRY_GOODS', 'PRODUCE', 'PACKAGING']
 
 export default function PantryPage() {
+  const { user } = useRole()
   const [items, setItems] = useState<Ingredient[]>([])
   const [filter, setFilter] = useState<'ALL' | Category>('ALL')
   const [search, setSearch] = useState('')
@@ -55,7 +57,7 @@ export default function PantryPage() {
         </div>
       )}
 
-      <div className="flex flex-col gap-4 lg:flex-row lg">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-center">
         <h1 className="mr-auto text-2xl font-extrabold text-brown">Pantry & Ingredients</h1>
         <input
           className="rounded-full border border-brown/20 bg-white/70 px-4 py-2"
@@ -127,7 +129,11 @@ export default function PantryPage() {
         <StockAdjustModal
           ingredient={adjusting}
           onClose={() => setAdjusting(null)}
-          onSave={async (change) => { await adjustStock(adjusting.id, change); setAdjusting(null); load() }}
+          onSave={async (change, reason) => {
+            await adjustStock(adjusting.id, change, { reason, user: user.name })
+            setAdjusting(null)
+            load()
+          }}
         />
       )}
     </div>

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Mail, RefreshCw } from 'lucide-react';
-import { listWorkers, resendInvite } from '../../api/worker';
+import { Mail, RefreshCw, Trash2 } from 'lucide-react';
+import { listWorkers, resendInvite, removeWorker } from '../../api/worker';
 import type { Worker } from '../../types/worker';
 import { ROLE_LABELS } from '../../types/roles';
 import AddWorkerModal from './AddWorkerModal';
@@ -14,6 +14,8 @@ export default function WorkersPage({ initialAddModalOpen = false }: { initialAd
   const [error, setError] = useState('');
   const [msg, setMsg] = useState('');
   const [resendingId, setResendingId] = useState<string | null>(null);
+  const [removingId, setRemovingId] = useState<string | null>(null);
+  const [workerToRemove, setWorkerToRemove] = useState<Worker | null>(null);
   const [showAddModal, setShowAddModal] = useState(initialAddModalOpen);
 
   useEffect(() => {
@@ -44,6 +46,24 @@ export default function WorkersPage({ initialAddModalOpen = false }: { initialAd
       setError((e as Error).message);
     } finally {
       setResendingId(null);
+    }
+  };
+
+  const onConfirmRemove = async () => {
+    if (!workerToRemove) return;
+    const w = workerToRemove;
+    setMsg('');
+    setError('');
+    setRemovingId(w.id);
+    try {
+      await removeWorker(w.id);
+      setWorkers((prev) => prev.filter((x) => x.id !== w.id));
+      setMsg(`${w.full_name} has been removed.`);
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setRemovingId(null);
+      setWorkerToRemove(null);
     }
   };
 
@@ -150,23 +170,68 @@ export default function WorkersPage({ initialAddModalOpen = false }: { initialAd
                     <Mail size={16} className="shrink-0 text-brown/60" aria-hidden="true" />
                     <span className="truncate">{w.email}</span>
                   </p>
-                  {w.status === 'pending' && (
+
+                  <div className="mt-4 flex items-center justify-between gap-2">
+                    {w.status === 'pending' ? (
+                      <button
+                        type="button"
+                        onClick={() => onResend(w)}
+                        disabled={resendingId !== null}
+                        className="inline-flex items-center gap-2 rounded-lg px-2 py-1.5 text-sm font-semibold text-brown transition hover:bg-amber-100 disabled:cursor-wait disabled:opacity-60"
+                      >
+                        <RefreshCw size={14} className={resendingId === w.id ? 'animate-spin' : ''} aria-hidden="true" />
+                        {resendingId === w.id ? 'Sending invite...' : 'Resend invite'}
+                      </button>
+                    ) : (
+                      <span />
+                    )}
                     <button
                       type="button"
-                      onClick={() => onResend(w)}
-                      disabled={resendingId !== null}
-                      className="mt-4 inline-flex items-center gap-2 rounded-lg px-2 py-1.5 text-sm font-semibold text-brown transition hover:bg-amber-100 disabled:cursor-wait disabled:opacity-60"
+                      onClick={() => setWorkerToRemove(w)}
+                      disabled={removingId !== null}
+                      className="inline-flex items-center gap-2 rounded-lg px-2 py-1.5 text-sm font-semibold text-red-700 transition hover:bg-red-50 disabled:cursor-wait disabled:opacity-60"
                     >
-                      <RefreshCw size={14} className={resendingId === w.id ? 'animate-spin' : ''} aria-hidden="true" />
-                      {resendingId === w.id ? 'Sending invite...' : 'Resend invite'}
+                      <Trash2 size={14} aria-hidden="true" />
+                      Remove
                     </button>
-                  )}
+                  </div>
                 </div>
               </article>
             );
           })}
         </div>
       ) : null}
+
+      {workerToRemove && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-brown/40 p-4" role="dialog" aria-modal="true">
+          <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl">
+            <h2 className="text-lg font-bold text-brown">Remove worker?</h2>
+            <p className="mt-2 text-sm text-brown/70">
+              <span className="font-semibold text-brown">{workerToRemove.full_name}</span> will lose access to
+              BakeHouse Express. This can't be undone.
+            </p>
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => setWorkerToRemove(null)}
+                disabled={removingId !== null}
+                className="rounded-xl px-4 py-2 text-sm font-semibold text-brown hover:bg-amber-50"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={onConfirmRemove}
+                disabled={removingId !== null}
+                className="rounded-xl bg-red-700 px-4 py-2 text-sm font-semibold text-white hover:bg-red-800 disabled:opacity-60"
+              >
+                {removingId ? 'Removing...' : 'Remove'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {showAddModal && <AddWorkerModal onClose={closeAddModal} onSuccess={onWorkerAdded} />}
     </section>
   );

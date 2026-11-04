@@ -6,7 +6,7 @@ import type { Recipe, RecipeCategory, RecipeItem } from '../../types/recipe'
 
 const inputClass = 'w-full rounded-lg border border-brown/30 bg-white px-3 py-2'
 
-const CATEGORIES: RecipeCategory[] = ['BREAD', 'COOKIES', 'PASTRIES']
+const CATEGORIES: RecipeCategory[] = ['BREAD', 'COOKIES', 'PASTRIES', 'CAKES']
 
 export default function RecipeForm({ ingredients, onSave, onClose }: {
   ingredients: Ingredient[]
