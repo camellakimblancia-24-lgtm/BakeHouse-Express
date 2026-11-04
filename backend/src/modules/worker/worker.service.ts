@@ -1,5 +1,5 @@
 import { supabaseAdmin } from '../../lib/supabaseAdmin.js';
-import type { CreateWorkerInput, DeleteWorkerInput, UpdatePasswordInput } from './admin.schema.js';
+import type { CreateWorkerInput, DeleteWorkerInput, UpdatePasswordInput } from './worker.schema.js';
 
 export class AdminService {
   static async registerWorker(input: CreateWorkerInput) {
