@@ -5,6 +5,7 @@ import NavTabs, { MobileNavMenu } from './NavTabs'
 import { getIngredients } from '../../api/ingredients'
 import type { Ingredient } from '../../types/ingredients'
 import { ROLE_LABELS, useRole } from '../../types/roles'
+import logo from '../../assets/logo.png'
 
 const iconButton =
   'flex h-10 w-10 items-center justify-center rounded-full bg-white/60 text-brown shadow-sm ring-1 ring-brown/10 backdrop-blur transition hover:bg-white sm:h-11 sm:w-11'
@@ -66,7 +67,7 @@ export default function Header() {
     <header className="mx-auto flex w-full max-w-[1280px] flex-wrap items-center gap-3 px-4 py-4 sm:px-8 sm:py-5 lg:px-10 xl:gap-4">
       <div className="order-1 flex min-w-0 items-center gap-3">
         <MobileNavMenu />
-        <div className="h-9 w-9 shrink-0 rounded-full bg-gradient-to-br from-amber-300 to-orange-500 sm:h-10 sm:w-10" />
+        <img src={logo} alt="BakeHouse Express logo" className="h-9 w-9 shrink-0 rounded-full object-cover sm:h-20 sm:w-20" />
         <span className="truncate text-base font-extrabold uppercase tracking-wide text-brown sm:text-xl">
           BakeHouse Express
         </span>
