@@ -20,7 +20,6 @@ app.use(
 )
 app.use(express.json())
 
-
 // Health check (public)
 app.get('/health', (_req, res) => {
   res.json({ status: 'ok' })

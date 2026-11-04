@@ -38,7 +38,6 @@ function App() {
       <RoleProvider>
         <Routes>
           <Route path="/" element={<LandingPage />} />
-          <Route path="/set-password" element={<SetPasswordPage />} />
           <Route path="/pantry" element={<Guarded path="/pantry"><PantryPage /></Guarded>} />
           <Route path="/recipes" element={<Guarded path="/recipes"><RecipeBatchingPage /></Guarded>} />
           <Route path="/counter" element={<Guarded path="/counter"><CounterPage /></Guarded>} />

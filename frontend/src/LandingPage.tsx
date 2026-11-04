@@ -2,7 +2,7 @@ import './App.css'
 import loginAsset from './assets/LoginAsset.png'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { loginUser } from './api/auth'
+import { authApi } from './api/auth'
 import logo from './assets/logo.png'
 
 const navItems: string[] = []
@@ -22,7 +22,7 @@ function LandingPage() {
     setLoading(true);
 
     try {
-      const data = await loginUser(email, password);
+      const data = await authApi.login({ email, password });
 
       localStorage.setItem('bakehouse_auth_token', data.token);
       localStorage.setItem('bakehouse_user', JSON.stringify(data.user));
