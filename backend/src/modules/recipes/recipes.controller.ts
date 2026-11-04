@@ -24,3 +24,8 @@ export async function remove(req: any, res: Response) {
   await service.deleteRecipe(req.token, req.params.id)
   res.status(204).send()
 }
+
+export async function cost(req: any, res: Response) {
+  res.json({ data: await service.getRecipeCost(req.token, req.params.id) })
+}
+

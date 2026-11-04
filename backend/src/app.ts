@@ -6,7 +6,7 @@ import ingredientsRoutes from './modules/ingredients/ingredients.routes.js'
 import recipesRoutes from './modules/recipes/recipes.routes.js'
 import productsRoutes from './modules/products/products.routes.js'
 import ordersRoutes from './modules/orders/orders.routes.js'
-import adminRoutes from './modules/admin/admin.routes.js'
+import adminRoutes from './modules/worker/worker.routes.js'
 import suppliersRoutes from './modules/suppliers/suppliers.routes.js'
 import inventoryRoutes from './modules/inventory/inventory.routes.js'
 

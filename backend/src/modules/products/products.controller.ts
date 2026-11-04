@@ -24,3 +24,7 @@ export async function remove(req: any, res: Response) {
   await service.deleteProduct(req.token, req.params.id)
   res.status(204).send()
 }
+
+export async function canMake(req: any, res: Response) {
+  res.json({ data: await service.getCanMake(req.token, req.params.id) })
+}

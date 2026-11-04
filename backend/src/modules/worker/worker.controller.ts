@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express';
-import { createWorkerSchema, deleteWorkerSchema, updatePasswordSchema } from './admin.schema.js';
-import { AdminService } from './admin.service.js';
+import { createWorkerSchema, deleteWorkerSchema, updatePasswordSchema } from './worker.schema.js';
+import { AdminService } from './worker.service.js';
 
 export const createWorker = async (req: Request, res: Response) => {
   try {
