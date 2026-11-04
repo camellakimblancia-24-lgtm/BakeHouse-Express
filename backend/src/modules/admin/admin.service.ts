@@ -5,24 +5,20 @@ export class AdminService {
   static async registerWorker(input: CreateWorkerInput) {
     const { email, role } = input;
 
-    const { data, error } = await supabaseAdmin.auth.admin.generateLink({
-      type: 'invite',
-      email,
-      options: {
-        data: { role },
-        redirectTo: `${process.env.FRONTEND_URL || 'http://localhost:5173'}/update-password`,
-      },
+    // Use inviteUserByEmail to send the actual email through Supabase
+    const { data, error } = await supabaseAdmin.auth.admin.inviteUserByEmail(email, {
+      data: { role },
+      redirectTo: `${process.env.FRONTEND_URL || 'http://localhost:5173'}/set-password`,
     });
 
     if (error || !data.user) {
-      throw new Error(error?.message || 'Failed to generate invite link');
+      throw new Error(error?.message || 'Failed to send invite email');
     }
 
     const userId = data.user.id;
-    const actionLink = data.properties?.action_link;
 
     const { error: workerInsertError } = await supabaseAdmin
-    .from('workers')
+      .from('workers')
       .insert([
         {
           id: userId,
@@ -30,17 +26,16 @@ export class AdminService {
           role: role,
           status: 'pending',
         }
-      ])
+      ]);
 
-      if (workerInsertError) {
-        throw new Error(`Invite sent, but failed to create worker profile: ${workerInsertError.message}`);
+    if (workerInsertError) {
+      throw new Error(`Invite sent, but failed to create worker profile: ${workerInsertError.message}`);
     }
 
     return {
       id: userId,
       email: data.user.email,
       role: role,
-      actionLink,
     };
   }
 
