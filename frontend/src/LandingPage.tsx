@@ -1,5 +1,5 @@
 import './App.css'
-import loginAsset from './assets/LoginAsset.png'
+import loginAsset from 'assets/LoginAsset.png'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
