@@ -64,7 +64,7 @@ export default function Header() {
   }
 
   return (
-    <header className="mx-auto flex w-full max-w-[1280px] flex-wrap items-center gap-3 px-4 py-4 sm:px-8 sm:py-5 lg:px-10 xl:gap-4">
+    <header className="mx-auto flex w-full max-w-7xl flex-wrap items-center gap-3 px-4 py-4 sm:px-8 sm:py-5 lg:px-10 xl:gap-4">
       <div className="order-1 flex min-w-0 items-center gap-3">
         <MobileNavMenu />
         <img src={logo} alt="BakeHouse Express logo" className="h-9 w-9 shrink-0 rounded-full object-cover sm:h-20 sm:w-20" />
@@ -95,7 +95,7 @@ export default function Header() {
                 className="fixed inset-0 z-10 cursor-default"
                 onClick={() => setBellOpen(false)}
               />
-              <div className="fixed inset-x-4 top-[4.5rem] z-20 rounded-2xl bg-white p-2 shadow-lg ring-1 ring-brown/10 sm:absolute sm:inset-x-auto sm:right-0 sm:top-auto sm:mt-2 sm:w-80">
+              <div className="fixed inset-x-4 top-18 z-20 rounded-2xl bg-white p-2 shadow-lg ring-1 ring-brown/10 sm:absolute sm:inset-x-auto sm:right-0 sm:top-auto sm:mt-2 sm:w-80">
                 <p className="px-3 py-2 text-xs font-semibold uppercase tracking-wide text-brown/60">
                   Stock alerts
                 </p>
