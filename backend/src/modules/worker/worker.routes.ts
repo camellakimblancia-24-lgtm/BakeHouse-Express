@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { createWorker, deleteWorker, updateWorkerPassword } from './admin.controller.js';
+import { createWorker, deleteWorker, updateWorkerPassword } from './worker.controller.js';
 import { verifyManager } from '../../middleware/admin.middleware.js';
 
 const router = Router();
