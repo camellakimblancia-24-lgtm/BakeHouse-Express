@@ -1,5 +1,5 @@
 import { getProducts, recordEvent, saveProducts } from './counter'
-import { logBatch } from './recipes'
+import { deleteRecipeRecord, getRecipes, logBatch } from './recipes'
 import { addLog } from './logs'
 import type { Recipe } from '../types/recipe'
 
@@ -21,4 +21,21 @@ export async function bakeBatch(recipe: Recipe, batches: number, baker: string):
     change: `+${produced} ${recipe.yieldLabel} on counter`,
   })
   return produced
+}
+
+export async function removeRecipe(recipeId: number): Promise<void> {
+  const recipes = await getRecipes()
+  const recipe = recipes.find((r) => r.id === recipeId)
+  if (!recipe) throw new Error('Recipe not found.')
+
+  const products = await getProducts()
+  const product = products.find((p) => p.recipeId === recipeId)
+  if (product && product.stock > 0) {
+    throw new Error(
+      `${product.stock} ${recipe.name} are still on the display counter. Sell them or log them as waste first.`,
+    )
+  }
+
+  if (product) saveProducts(products.filter((p) => p.id !== product.id))
+  await deleteRecipeRecord(recipeId)
 }
