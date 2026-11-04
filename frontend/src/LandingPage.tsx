@@ -4,7 +4,7 @@ import logo from './assets/logo.png'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { loginUser } from './api/auth'
-import logo from './assets/logo.png'
+
 
 const navItems: string[] = []
 
