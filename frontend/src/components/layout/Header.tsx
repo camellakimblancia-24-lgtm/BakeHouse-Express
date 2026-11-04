@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react'
 import { Bell, ChevronDown } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
-import NavTabs from './NavTabs'
+import NavTabs, { MobileNavMenu } from './NavTabs'
 import { getIngredients } from '../../api/ingredients'
 import type { Ingredient } from '../../types/ingredients'
 import { ROLE_LABELS, useRole } from '../../types/roles'
+import logo from '../../assets/logo.png'
 
 const iconButton =
-  'flex h-11 w-11 items-center justify-center rounded-full bg-white/60 text-brown shadow-sm ring-1 ring-brown/10 backdrop-blur transition hover:bg-white'
+  'flex h-10 w-10 items-center justify-center rounded-full bg-white/60 text-brown shadow-sm ring-1 ring-brown/10 backdrop-blur transition hover:bg-white sm:h-11 sm:w-11'
 
 type StockAlert = { ingredient: Ingredient; level: 'out' | 'low' }
 
@@ -63,19 +64,20 @@ export default function Header() {
   }
 
   return (
-    <header className="flex flex-wrap items-center gap-4 px-8 py-5">
-      <div className="flex shrink-0 items-center gap-3">
-        <div className="h-10 w-10 rounded-full bg-gradient-to-br from-amber-300 to-orange-500" />
-        <span className="whitespace-nowrap text-xl font-extrabold uppercase tracking-wide text-brown">
+    <header className="mx-auto flex w-full max-w-[1280px] flex-wrap items-center gap-3 px-4 py-4 sm:px-8 sm:py-5 lg:px-10 xl:gap-4">
+      <div className="order-1 flex min-w-0 items-center gap-3">
+        <MobileNavMenu />
+        <img src={logo} alt="BakeHouse Express logo" className="h-9 w-9 shrink-0 rounded-full object-cover sm:h-20 sm:w-20" />
+        <span className="truncate text-base font-extrabold uppercase tracking-wide text-brown sm:text-xl">
           BakeHouse Express
         </span>
       </div>
 
-      <div className="flex flex-1 justify-center">
+      <div className="order-3 hidden w-full justify-center lg:flex xl:order-2 xl:w-auto xl:flex-1">
         <NavTabs />
       </div>
 
-      <div className="flex shrink-0 items-center gap-3">
+      <div className="order-2 ml-auto flex shrink-0 items-center gap-2 sm:gap-3 xl:order-3">
         <div className="relative">
           <button className={`${iconButton} relative`} aria-label="Notifications" onClick={toggleBell}>
             <Bell size={18} />
@@ -93,7 +95,7 @@ export default function Header() {
                 className="fixed inset-0 z-10 cursor-default"
                 onClick={() => setBellOpen(false)}
               />
-              <div className="absolute right-0 z-20 mt-2 w-80 rounded-2xl bg-white p-2 shadow-lg ring-1 ring-brown/10">
+              <div className="fixed inset-x-4 top-[4.5rem] z-20 rounded-2xl bg-white p-2 shadow-lg ring-1 ring-brown/10 sm:absolute sm:inset-x-auto sm:right-0 sm:top-auto sm:mt-2 sm:w-80">
                 <p className="px-3 py-2 text-xs font-semibold uppercase tracking-wide text-brown/60">
                   Stock alerts
                 </p>
@@ -107,8 +109,8 @@ export default function Header() {
                         key={ingredient.id}
                         className="flex items-center justify-between gap-3 rounded-xl px-3 py-2 hover:bg-cream"
                       >
-                        <span className="leading-tight">
-                          <span className="block text-sm font-semibold text-brown">{ingredient.name}</span>
+                        <span className="min-w-0 leading-tight">
+                          <span className="block truncate text-sm font-semibold text-brown">{ingredient.name}</span>
                           <span className="block text-xs text-brown/60">
                             {ingredient.quantity} {ingredient.unit} left, reorder at {ingredient.reorder_level}{' '}
                             {ingredient.unit}
@@ -146,16 +148,17 @@ export default function Header() {
               setMenuOpen((o) => !o)
               setBellOpen(false)
             }}
-            className="flex items-center gap-3 rounded-full bg-white/60 py-1.5 pl-1.5 pr-4 shadow-sm ring-1 ring-brown/10 backdrop-blur transition hover:bg-white"
+            aria-label="Account menu"
+            className="flex items-center gap-3 rounded-full bg-white/60 p-1.5 shadow-sm ring-1 ring-brown/10 backdrop-blur transition hover:bg-white sm:pr-4"
           >
             <span className="flex h-9 w-9 items-center justify-center rounded-full bg-brown text-sm font-bold text-cream">
               {user.initials}
             </span>
-            <span className="text-left leading-tight">
+            <span className="hidden text-left leading-tight sm:block">
               <span className="block text-sm font-semibold text-brown">{user.name}</span>
               <span className="block text-xs text-brown/60">{ROLE_LABELS[user.role]}</span>
             </span>
-            <ChevronDown size={16} className="text-brown/60" />
+            <ChevronDown size={16} className="hidden text-brown/60 sm:block" />
           </button>
 
           {menuOpen && (

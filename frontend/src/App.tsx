@@ -18,7 +18,9 @@ function AppLayout({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-cream via-orange-50 to-rose-100">
       <Header />
-      <main className="px-8 pb-10">{children}</main>
+      <main className="mx-auto w-full max-w-[1280px] px-4 pb-12 pt-6 sm:px-8 sm:pt-8 lg:px-10">
+        {children}
+      </main>
     </div>
   )
 }

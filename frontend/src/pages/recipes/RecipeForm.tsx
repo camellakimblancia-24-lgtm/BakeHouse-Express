@@ -57,7 +57,7 @@ export default function RecipeForm({ ingredients, onSave, onClose }: {
 
         <PhotoUpload onChange={setPhoto} />
 
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
           <input type="number" min={1} className={inputClass} placeholder="Yield per batch" value={yieldPerBatch} onChange={(e) => setYield(Number(e.target.value))} />
           <input className={inputClass} placeholder="Unit (pcs, loaves)" value={yieldLabel} onChange={(e) => setYieldLabel(e.target.value)} />
           <input type="number" min={0} className={inputClass} placeholder="Bake (min)" value={bakeMinutes} onChange={(e) => setBakeMinutes(Number(e.target.value))} />

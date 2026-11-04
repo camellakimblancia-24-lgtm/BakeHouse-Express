@@ -27,7 +27,7 @@ export default function IngredientForm({ onSave, onClose }: {
         <input className={inputClass} placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} />
         <select className={inputClass} value={category} onChange={(e) => setCategory(e.target.value as Category)}>
           <option value="DAIRY">Dairy</option>
-          <option value="DRY_GOODS">Dry goods</option>
+          <option value="DRY_GOODS">Dry Goods</option>
           <option value="PRODUCE">Produce</option>
           <option value="PACKAGING">Packaging</option>
         </select>
