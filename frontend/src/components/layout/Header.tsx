@@ -4,9 +4,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import NavTabs from './NavTabs'
 import { getIngredients } from '../../api/ingredients'
 import type { Ingredient } from '../../types/ingredients'
-import { DEFAULT_ROUTE, ROLE_LABELS, STAFF, useRole } from '../../types/roles'
-import logo from '../../assets/logo.png'
-
+import { ROLE_LABELS, useRole } from '../../types/roles'
 
 const iconButton =
   'flex h-11 w-11 items-center justify-center rounded-full bg-white/60 text-brown shadow-sm ring-1 ring-brown/10 backdrop-blur transition hover:bg-white'
@@ -23,7 +21,7 @@ function getAlerts(ingredients: Ingredient[]): StockAlert[] {
 }
 
 export default function Header() {
-  const { user, setUser, canAccess } = useRole()
+  const { user, canAccess } = useRole()
   const navigate = useNavigate()
   const [menuOpen, setMenuOpen] = useState(false)
   const [bellOpen, setBellOpen] = useState(false)
@@ -58,6 +56,8 @@ export default function Header() {
 
   function logout() {
     localStorage.removeItem('bakehouse_auth_token')
+    localStorage.removeItem('bakehouse_user_role')
+    localStorage.removeItem('bakehouse_user_name')
     setMenuOpen(false)
     navigate('/')
   }
@@ -65,7 +65,7 @@ export default function Header() {
   return (
     <header className="flex flex-wrap items-center gap-4 px-8 py-5">
       <div className="flex shrink-0 items-center gap-3">
-        <img src={logo} alt="BakeHouse Express logo" className="h-23 w-23 rounded-full object-cover" />
+        <div className="h-10 w-10 rounded-full bg-gradient-to-br from-amber-300 to-orange-500" />
         <span className="whitespace-nowrap text-xl font-extrabold uppercase tracking-wide text-brown">
           BakeHouse Express
         </span>
@@ -165,32 +165,12 @@ export default function Header() {
                 className="fixed inset-0 z-10 cursor-default"
                 onClick={() => setMenuOpen(false)}
               />
-              <div className="absolute right-0 z-20 mt-2 w-64 rounded-2xl bg-white p-2 shadow-lg ring-1 ring-brown/10">
-                <p className="px-3 py-2 text-xs font-semibold uppercase tracking-wide text-brown/60">
-                  Switch staff
-                </p>
-                {STAFF.map((s) => (
-                  <button
-                    key={s.name}
-                    onClick={() => {
-                      setUser(s)
-                      setMenuOpen(false)
-                      navigate(DEFAULT_ROUTE[s.role])
-                    }}
-                    className={`flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left transition hover:bg-cream ${
-                      s.name === user.name ? 'bg-cream' : ''
-                    }`}
-                  >
-                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-brown text-xs font-bold text-cream">
-                      {s.initials}
-                    </span>
-                    <span className="leading-tight">
-                      <span className="block text-sm font-semibold text-brown">{s.name}</span>
-                      <span className="block text-xs text-brown/60">{ROLE_LABELS[s.role]}</span>
-                    </span>
-                  </button>
-                ))}
-
+              <div className="absolute right-0 z-20 mt-2 w-56 rounded-2xl bg-white p-2 shadow-lg ring-1 ring-brown/10">
+                <div className="px-3 py-2">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-brown/60">Signed in as</p>
+                  <p className="truncate text-sm font-semibold text-brown">{user.name}</p>
+                  <p className="text-xs text-brown/60">{ROLE_LABELS[user.role]}</p>
+                </div>
                 <div className="mt-1 border-t border-brown/10 pt-1">
                   <button
                     onClick={logout}
