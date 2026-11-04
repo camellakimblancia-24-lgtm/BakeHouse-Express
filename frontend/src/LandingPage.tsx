@@ -1,5 +1,6 @@
 import './App.css'
-import loginAsset from './assets/LoginAsset.png'
+import LoginAsset from './assets/LoginAsset.png'
+import logo from './assets/logo.png'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { loginUser } from './api/auth'
@@ -40,36 +41,24 @@ function LandingPage() {
     <div className="landing-page-shell">
       <div className="landing-page-card">
         <header className="landing-topbar">
-          <div className="brand-block" aria-label="Bakery Shop brand">
-            <img src={logo} alt="BakeHouse Express logo" className="h-10 w-10 rounded-full object-cover" />
+          <div className="brand-block" aria-label="BakeHouse Express">
+            <img className="brand-icon" src={logo} alt="" aria-hidden="true" />
             <div className="brand-name">
               <span>BAKEHOUSE EXPRESS</span>
             </div>
           </div>
-
-          {navItems.length > 0 && (
-            <nav className="main-nav" aria-label="Main navigation">
-              {navItems.map((item) => (
-                <a key={item} href="#" className={item === 'Menu' ? 'active' : ''}>
-                  {item}
-                </a>
-              ))}
-            </nav>
-          )}
         </header>
 
-        <main
-          className="landing-main"
-          style={{
-            backgroundImage: `linear-gradient(rgba(246, 237, 222, 0.62), rgba(230, 216, 198, 0.72)), url("${loginAsset}")`,
-            backgroundPosition: 'center',
-            backgroundSize: 'cover',
-          }}
-        >
-          <div className="hero-scene">
+        <main className="landing-main">
+          <div
+            className="hero-scene"
+            style={{ backgroundImage: `url("${LoginAsset}")` }}
+          >
             <div className="text-banner">
-              <h1>Bakehouse Express</h1>
-              <p>Batch it. Track it. Sell it.</p>
+              <div className="text-banner-copy">
+                <h1>Bakehouse Express</h1>
+                <p>Batch it. Track it. Sell it.</p>
+              </div>
             </div>
           </div>
 
@@ -78,7 +67,6 @@ function LandingPage() {
               Welcome to <span>BakeHouse Express</span>
             </h2>
 
-            {/* Error Message Box */}
             {error && (
               <div style={{ color: '#dc2626', backgroundColor: '#fef2f2', padding: '0.5rem', borderRadius: '4px', fontSize: '0.875rem', marginBottom: '1rem' }}>
                 {error}
@@ -115,7 +103,7 @@ function LandingPage() {
               </button>
             </form>
 
-            <p className="login-link" style={{ marginTop: '1rem', fontSize: '0.875rem', textAlign: 'center' }}>
+            <p className="login-link">
               Don't have an account? Contact your Admin.
             </p>
           </aside>
