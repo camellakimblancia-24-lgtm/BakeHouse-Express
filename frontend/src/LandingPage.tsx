@@ -2,8 +2,6 @@ import './App.css'
 import loginAsset from './assets/LoginAsset.png'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import logo from './assets/logo.png'
-
 
 const navItems: string[] = []
 
@@ -53,7 +51,9 @@ function LandingPage() {
       <div className="landing-page-card">
         <header className="landing-topbar">
           <div className="brand-block" aria-label="Bakery Shop brand">
-            <img src={logo} alt="BakeHouse Express logo" className="h-10 w-10 rounded-full object-cover" />
+            <div className="brand-icon" aria-hidden="true">
+              <span className="brand-icon-inner" />
+            </div>
             <div className="brand-name">
               <span>BAKEHOUSE EXPRESS</span>
             </div>
@@ -70,21 +70,19 @@ function LandingPage() {
           )}
         </header>
 
-        <main
-          className="landing-main"
-          style={{
-            backgroundImage: `linear-gradient(rgba(246, 237, 222, 0.62), rgba(230, 216, 198, 0.72)), url("${loginAsset}")`,
-            backgroundPosition: 'center',
-            backgroundSize: 'cover',
-          }}
-        >
-          <div className="hero-scene">
+        <main className="landing-main">
+          {/* Right half: clear image, no cream overlay */}
+          <div
+            className="hero-scene"
+            style={{ backgroundImage: `url("${loginAsset}")` }}
+          >
             <div className="text-banner">
               <h1>Bakehouse Express</h1>
               <p>Batch it. Track it. Sell it.</p>
             </div>
           </div>
 
+          {/* Left half: plain cream with the login card */}
           <aside className="signup-card" aria-label="Login form">
             <h2>
               Welcome to <span>BakeHouse Express</span>
