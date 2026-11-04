@@ -11,6 +11,7 @@ import Header from './components/layout/Header'
 import { DEFAULT_ROUTE, useRole } from './types/roles'
 import AdminPage from './pages/admin/AdminPage'
 import WorkersPage from './pages/admin/WorkerPage'
+import SetPasswordPage from './pages/SetPasswordPage.tsx'
 import AdminRoutes from './components/AdminRoutes'
 
 function AppLayout({ children }: { children: ReactNode }) {

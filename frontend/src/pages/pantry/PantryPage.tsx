@@ -1,32 +1,25 @@
 import { useEffect, useState } from 'react'
 import { AlertTriangle, Boxes, PackageX } from 'lucide-react'
-import { ingredientsApi } from '../../api/ingredients'
+import { addIngredient, adjustStock, getIngredients } from '../../api/ingredients'
 import StockBadge from '../../components/ui/StockBadge'
 import StatCard from '../../components/ui/StatCard'
-import type { IngredientCategory, Ingredient, CreateIngredientPayload } from '../../types/ingredients'
+import type { Category, Ingredient } from '../../types/ingredients'
 import { useRole } from '../../types/roles'
 import IngredientForm from './IngredientForm'
 import StockAdjustModal from './StockAdjustModal'
 
-const tabs: ('ALL' | IngredientCategory)[] = ['ALL', 'DAIRY', 'DRY_GOODS', 'PRODUCE', 'PACKAGING']
+const tabs: ('ALL' | Category)[] = ['ALL', 'DAIRY', 'DRY_GOODS', 'PRODUCE', 'PACKAGING']
 
 export default function PantryPage() {
   const { user } = useRole()
   const [items, setItems] = useState<Ingredient[]>([])
-  const [filter, setFilter] = useState<'ALL' | IngredientCategory>('ALL')
+  const [filter, setFilter] = useState<'ALL' | Category>('ALL')
   const [search, setSearch] = useState('')
   const [lowOnly, setLowOnly] = useState(false)
   const [showAdd, setShowAdd] = useState(false)
   const [adjusting, setAdjusting] = useState<Ingredient | null>(null)
 
-  const load = async () => {
-    const token = localStorage.getItem('bakehouse_auth_token')
-
-    if (!token) throw new Error('No auth token found. Please log in again')
-    
-    setItems(await ingredientsApi.getIngredients(token));
-    
-  } 
+  const load = async () => setItems(await getIngredients())
   useEffect(() => { load() }, [])
 
   const lowCount = items.filter((i) => i.quantity < i.reorder_level).length
@@ -37,23 +30,7 @@ export default function PantryPage() {
       i.name.toLowerCase().includes(search.toLowerCase()) &&
       (!lowOnly || i.quantity < i.reorder_level)
   )
-
-  const addIngredient = async (data: CreateIngredientPayload) => {
-    try {
-    const token = localStorage.getItem('bakehouse_auth_token');
-    if (!token) throw new Error('No auth token found. Please log in again');
-
-    const newItem = await ingredientsApi.createIngredient(token, data);
-    
-    setItems((prev) => [...prev, newItem]);
-    
-    setShowAdd(false);
-  } catch (err: any) {
-    console.error('Failed to create ingredient:', err.message);
-    alert(err.message);
-  }
-  }
-
+  
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 lg:gap-4">
@@ -145,7 +122,7 @@ export default function PantryPage() {
       {showAdd && (
         <IngredientForm
           onClose={() => setShowAdd(false)}
-          onSave={async (data) => { await addIngredient(data); load() }}
+          onSave={async (data) => { await addIngredient(data); setShowAdd(false); load() }}
         />
       )}
       {adjusting && (
