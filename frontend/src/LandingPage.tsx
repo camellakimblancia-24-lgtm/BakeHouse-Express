@@ -5,8 +5,6 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { authApi } from './api/auth'
 
-const navItems: string[] = []
-
 function LandingPage() {
 
   const [email, setEmail] = useState('')

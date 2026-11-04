@@ -13,7 +13,12 @@ export async function create(req: any, res: Response) {
 
 export async function update(req: any, res: Response) {
   const input = ingredientUpdateSchema.parse(req.body)
-  res.json({ data: await service.updateIngredient(req.token, req.params.id, input) })
+  const update = {
+    ...(input.name !== undefined && { name: input.name }),
+    ...(input.quantity !== undefined && { quantity: input.quantity }),
+    ...(input.unit !== undefined && { unit: input.unit }),
+  }
+  res.json({ data: await service.updateIngredient(req.token, req.params.id, update) })
 }
 
 export async function remove(req: any, res: Response) {
