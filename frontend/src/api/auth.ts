@@ -8,22 +8,31 @@ export interface AuthUser {
   role: Role
 }
 
+export async function loginUser(email: string, password: string) {
+  try {
+    const response = await fetch ('${API_URL}/auth/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, password }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || 'Login failed');
+    }
+
+    return data;
+  } catch (error) {
+    throw new Error('Login failed');
+  }
+}
+
 async function readError(res: Response, fallback: string) {
   const body = await res.json().catch(() => null)
   return body?.message ?? fallback
-}
-
-export async function setPassword(token: string, password: string): Promise<void> {
-  if (USE_MOCK) {
-    await new Promise((resolve) => setTimeout(resolve, 500))
-    return
-  }
-  const res = await fetch(`${API_URL}/auth/set-password`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ token, password }),
-  })
-  if (!res.ok) throw new Error(await readError(res, 'This link is invalid or has expired.'))
 }
 
 export async function login(email: string, password: string): Promise<AuthUser> {

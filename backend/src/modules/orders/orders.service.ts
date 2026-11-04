@@ -1,5 +1,6 @@
 import { supabaseForUser } from '../../lib/supabaseClient.js'
 import { AppError } from '../../middleware/errorHandler.js'
+import { deductStockForOrder } from '../inventory/inventory.service.js'
 
 type OrderInput = {
   customer_name: string

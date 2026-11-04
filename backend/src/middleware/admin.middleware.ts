@@ -5,7 +5,7 @@ interface AuthRequest extends Request {
   user?: any;
 }
 
-export const verifyManager = async (req: AuthRequest, res: Response, next: NextFunction) => {
+export const verifyAdmin = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     
     const authHeader = req.headers.authorization;
@@ -21,7 +21,6 @@ export const verifyManager = async (req: AuthRequest, res: Response, next: NextF
       return res.status(401).json({ message: 'Invalid or expired token.' });
     }
 
-    // Check if role is either manager or admin
     const role = user.user_metadata?.role;
     if (role !== 'admin' && role !== 'manager') {
       return res.status(403).json({ message: 'Forbidden: Managers or Admins only.' });
