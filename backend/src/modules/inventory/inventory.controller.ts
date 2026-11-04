@@ -25,3 +25,7 @@ export async function updateSettings(req: any, res: Response) {
   const input = settingsSchema.parse(req.body)
   res.json({ data: await service.updateSettings(req.token, req.params.id, input) })
 }
+
+export async function deduct(req: any, res: Response) {
+  res.json({ data: await service.deductStockForOrder(req.token, req.params.orderId) })
+}
