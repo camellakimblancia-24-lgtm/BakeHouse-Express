@@ -2,8 +2,8 @@ import './App.css'
 import loginAsset from './assets/LoginAsset.png'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { loginUser } from './api/auth'
 import logo from './assets/logo.png'
-
 
 const navItems: string[] = []
 
@@ -22,22 +22,10 @@ function LandingPage() {
     setLoading(true);
 
     try {
-      const response = await fetch('http://localhost:3000/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Invalid email or password.');
-      }
+      const data = await loginUser(email, password);
 
       localStorage.setItem('bakehouse_auth_token', data.token);
-      localStorage.setItem('bakehouse_user_role', data.role);
+      localStorage.setItem('bakehouse_user', JSON.stringify(data.user));
 
       navigate('/pantry', { replace: true });
 
