@@ -1,9 +1,7 @@
 .landing-page-shell {
   min-height: 100vh;
   min-height: 100dvh;
-  display: flex;
-  padding: 0;
-  background: linear-gradient(135deg, #fbf3df 0%, #fff0e9 100%);
+  background: #f5e5d7;
 }
 
 .landing-page-card {
@@ -13,75 +11,43 @@
   width: 100%;
   min-height: 100vh;
   min-height: 100dvh;
-  margin: 0;
   overflow: hidden;
-  background: #fffaf2;
-  border-radius: 0;
+  background: #f5e5d7;
 }
 
 .landing-topbar {
-  position: absolute;
-  top: 0;
-  left: 0;
+  position: relative;
   z-index: 4;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-  width: 50%;
-  padding: 10px 28px;
-  background: #70452f;
+  min-height: 60px;
+  padding: 6px 12px;
+  background: #874326;
 }
 
 .brand-block {
   display: inline-flex;
   align-items: center;
-  gap: 12px;
+  gap: 9px;
   color: #fffaf2;
 }
 
 .brand-icon {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background: linear-gradient(180deg, #f4d299 0%, #d79f60 100%);
-  box-shadow: inset 0 0 0 1px rgba(97, 55, 19, 0.42);
-}
-
-.brand-icon::before,
-.brand-icon::after {
-  content: '';
-  position: absolute;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: #f6d39d;
-  top: 4px;
-}
-
-.brand-icon::before { left: 3px; }
-.brand-icon::after { right: 3px; }
-
-.brand-icon-inner {
-  position: absolute;
-  width: 12px;
-  height: 10px;
-  border-radius: 50% 50% 52% 48% / 60% 60% 40% 40%;
-  background: rgba(255, 255, 255, 0.2);
-  bottom: 4px;
+  display: block;
+  width: 72px;
+  height: 72px;
+  padding: 0;
+  background: transparent;
+  object-fit: contain;
 }
 
 .brand-name {
   display: flex;
   flex-direction: column;
-  line-height: 0.9;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  font-size: 1.1rem;
+  max-width: 180px;
+  line-height: 1.05;
+  font-weight: 700;
+  font-size: 1.5rem;
   font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
 }
 
@@ -120,21 +86,16 @@
 
 .landing-main {
   position: relative;
-  display: flex;
   flex: 1;
-  min-height: 0;
-  align-items: stretch;
-  background: #fffaf2;
+  min-height: calc(100vh - 60px);
+  min-height: calc(100dvh - 60px);
   overflow: hidden;
+  background: #dfc0aa;
 }
 
 .hero-scene {
-  position: relative;
-  order: 2;
-  flex: 0 0 50%;
-  align-self: stretch;
-  min-width: 0;
-  margin: 0;
+  position: absolute;
+  inset: 0;
   background-position: center;
   background-size: cover;
 }
@@ -143,120 +104,129 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, transparent 40%, rgba(20, 12, 6, 0.15));
+  background: rgba(255, 239, 222, 0.42);
   pointer-events: none;
 }
 
 .text-banner {
   position: absolute;
-  left: 8%;
-  bottom: 8%;
-  width: min(82%, 640px);
+  top: 50%;
+  left: clamp(420px, 45vw, 740px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  width: min(46vw, 760px);
+  transform: translate(-4%, -50%);
   z-index: 2;
-  text-align: left;
+  text-align: center;
+}
+
+.text-banner-copy {
+  min-width: 0;
+  max-width: 100%;
+  text-align: center;
+}
+
+.text-banner h1,
+.text-banner p {
+  color: #874326;
+  text-shadow: none;
 }
 
 .text-banner h1 {
   margin: 0;
-  font-size: clamp(2rem, 3.2vw, 3.2rem);
-  line-height: 1.08;
+  font-size: clamp(3.6rem, 5vw, 6.2rem);
+  line-height: 0.95;
   font-family: 'Arial Black', 'Segoe UI', sans-serif;
-  color: #fffaf3;
-  letter-spacing: -0.055em;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+  letter-spacing: -0.07em;
+  text-align: center;
 }
 
 .text-banner p {
-  margin-top: 10px;
-  font-size: clamp(1rem, 1.5vw, 1.25rem);
-  line-height: 1.35;
-  font-weight: 600;
-  color: #fffaf3;
-  text-shadow: 0 1px 5px rgba(0, 0, 0, 0.55);
+  margin: 14px 0 0;
+  font-size: clamp(1.8rem, 2.6vw, 3rem);
+  line-height: 1.25;
+  font-weight: 700;
+  text-align: center;
 }
 
 .signup-card {
-  position: relative;
-  order: 1;
+  position: absolute;
+  top: 45%;
+  left: clamp(40px, 6vw, 96px);
   z-index: 3;
   display: flex;
-  flex: 0 0 50%;
   flex-direction: column;
   justify-content: center;
-  width: 100%;
-  max-width: none;
-  margin: 0;
-  padding: 32px clamp(24px, 5vw, 64px);
-  background: transparent;
-}
-
-.signup-card > * {
-  width: 100%;
-  max-width: 420px;
-  align-self: center;
-}
-
-.signup-card::before {
-  content: '';
-  position: absolute;
-  inset: 20% clamp(44px, 7vw, 88px);
-  z-index: -1;
-  border: 1px solid rgba(112, 74, 43, 0.18);
-  border-radius: 24px;
-  background: #fffaf2;
-  box-shadow: 0 12px 30px rgba(89, 58, 38, 0.12);
+  width: clamp(340px, 27vw, 500px);
+  padding: 28px 20px 20px;
+  transform: translateY(-50%);
+  border-radius: 26px;
+  background: rgba(168, 105, 66, 0.61);
+  border: 1px solid rgba(112, 72, 40, 0.14);
+  box-shadow: 0 12px 26px rgba(76, 43, 28, 0.12);
 }
 
 .signup-card h2 {
-  margin: 0 0 20px;
-  font-size: clamp(1.3rem, 1.7vw, 1.65rem);
-  color: #70452f;
+  margin: 0 0 28px;
+  font-size: clamp(1.6rem, 2.2vw, 2.4rem);
+  line-height: 1.1;
+  letter-spacing: -0.04em;
+  color: #fffaf2;
   font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
   text-align: center;
+  font-weight: 800;
 }
 
 .signup-card h2 span {
   display: block;
   font-weight: 900;
-  letter-spacing: 0.03em;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
 }
 
 .field-group {
   display: block;
-  margin-bottom: 10px;
+  margin: 0;
 }
 
 .field-group span {
   display: block;
-  margin-bottom: 6px;
-  font-size: 0.75rem;
+  margin-bottom: 8px;
+  line-height: 1.2;
+  font-size: 0.9rem;
   letter-spacing: 0.02em;
   font-weight: 700;
-  color: #70452f;
+  color: #fffaf2;
   text-transform: none;
 }
 
 .field-group input {
   width: 100%;
-  border: 1px solid #e3d6c9;
-  background: #fffdf8;
-  border-radius: 7px;
-  height: 40px;
-  padding: 0 12px;
-  font-size: 0.85rem;
+  border: 0;
+  background: #fff;
+  border-radius: 999px;
+  height: 56px;
+  padding: 0 20px;
+  font-size: 1rem;
   color: #49372b;
 }
 
 .field-group input:focus {
-  outline: 2px solid rgba(112, 69, 47, 0.24);
-  outline-offset: 1px;
+  outline: 2px solid #874326;
+  outline-offset: 2px;
 }
 
 .field-group input:-webkit-autofill,
 .field-group input:-webkit-autofill:hover,
 .field-group input:-webkit-autofill:focus {
   -webkit-text-fill-color: #49372b;
-  -webkit-box-shadow: 0 0 0 1000px #fffdf8 inset;
+  -webkit-box-shadow: 0 0 0 1000px #fff inset;
   transition: background-color 9999s ease-out;
 }
 
@@ -265,83 +235,76 @@
   align-items: center;
   justify-content: center;
   width: 100%;
-  margin-top: 14px;
+  margin-top: 2px;
   border: none;
-  border-radius: 8px;
-  background: #70452f;
+  border-radius: 999px;
+  background: #874326;
   color: #fffaf2;
-  min-height: 40px;
+  min-height: 54px;
   font-weight: 700;
-  font-size: 0.9rem;
+  font-size: 1rem;
   cursor: pointer;
-  box-shadow: none;
+  box-shadow: 0 3px 6px rgba(76, 43, 28, 0.14);
 }
 
 .login-link {
-  margin: 12px 0 0;
+  margin: 14px 0 0;
   text-align: center;
-  color: #806858;
-  font-size: 0.82rem;
+  color: #fffaf2;
+  font-size: 0.875rem;
 }
 
 .login-link a {
-  color: #70452f;
+  color: #fffaf2;
   text-decoration: none;
   font-weight: 700;
 }
 
-@media (max-width: 980px) {
-  .landing-page-shell {
-    padding: 0;
-  }
-
-  .landing-page-card {
-    min-height: 100vh;
-    min-height: 100dvh;
-    border-radius: 0;
-  }
-
+@media (max-width: 760px) {
   .landing-main {
-    display: flex;
-    flex-direction: column;
-    flex: 1 0 auto;
-    overflow: visible;
+    min-height: calc(100dvh - 60px);
+    overflow: auto;
   }
 
   .signup-card {
-    width: calc(100% - 36px);
-    max-width: 520px;
-    flex: none;
-    margin: 0 auto;
-    padding: 28px clamp(20px, 7vw, 48px);
-  }
-
-  .signup-card::before {
-    inset: 12px 16px;
-  }
-
-  .hero-scene {
-    flex-basis: auto;
-    min-height: 420px;
-    width: 100%;
-    border-radius: 32px 32px 0 0;
+    top: 235px;
+    left: 50%;
+    width: min(88%, 420px);
+    padding: 22px 18px 18px;
+    transform: translateX(-50%);
   }
 
   .text-banner {
-    bottom: 8%;
+    top: 24px;
+    left: 50%;
+    flex-direction: column;
+    gap: 8px;
+    width: min(90%, 420px);
+    transform: translateX(-50%);
+    text-align: center;
+  }
+
+  .text-banner img {
+    flex-basis: 76px;
+    width: 76px;
+    height: 64px;
+    padding: 7px;
+  }
+
+  .text-banner-copy {
+    width: 100%;
+  }
+
+  .text-banner h1 {
+    font-size: clamp(1.8rem, 7vw, 2.6rem);
+  }
+
+  .text-banner p {
+    margin-top: 8px;
+    font-size: 1.15rem;
   }
 
   .landing-topbar {
-    position: static;
-    width: 100%;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-
-  .main-nav {
-    order: 3;
-    width: 100%;
-    flex-wrap: wrap;
-    gap: 16px;
+    min-height: 60px;
   }
 }

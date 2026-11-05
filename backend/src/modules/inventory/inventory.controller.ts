@@ -1,6 +1,6 @@
 import type { Response } from 'express'
-import { movementSchema, settingsSchema } from './inventory.schema.js'
 import * as service from './inventory.service.js'
+import { parseMovement, settingsSchema } from './inventory.schema.js'
 
 export async function list(req: any, res: Response) {
   res.json({ data: await service.listStock(req.token) })
@@ -17,7 +17,7 @@ export async function movements(req: any, res: Response) {
 }
 
 export async function addMovement(req: any, res: Response) {
-  const input = movementSchema.parse(req.body)
+  const input = parseMovement(req.body)
   res.status(201).json({ data: await service.recordMovement(req.token, input) })
 }
 

@@ -11,14 +11,13 @@ import Header from './components/layout/Header'
 import { DEFAULT_ROUTE, useRole } from './types/roles'
 import AdminPage from './pages/admin/AdminPage'
 import WorkersPage from './pages/admin/WorkerPage'
-import SetPasswordPage from './pages/SetPasswordPage.tsx'
 import AdminRoutes from './components/AdminRoutes'
 
 function AppLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-cream via-orange-50 to-rose-100">
+    <div className="min-h-screen bg-linear-to-br from-cream via-orange-50 to-rose-100">
       <Header />
-      <main className="mx-auto w-full max-w-[1280px] px-4 pb-12 pt-6 sm:px-8 sm:pt-8 lg:px-10">
+      <main className="mx-auto w-full max-w-7xl px-4 pb-12 pt-6 sm:px-8 sm:pt-8 lg:px-10">
         {children}
       </main>
     </div>
@@ -40,7 +39,6 @@ function App() {
       <RoleProvider>
         <Routes>
           <Route path="/" element={<LandingPage />} />
-          <Route path="/set-password" element={<SetPasswordPage />} />
           <Route path="/pantry" element={<Guarded path="/pantry"><PantryPage /></Guarded>} />
           <Route path="/recipes" element={<Guarded path="/recipes"><RecipeBatchingPage /></Guarded>} />
           <Route path="/counter" element={<Guarded path="/counter"><CounterPage /></Guarded>} />
