@@ -7,5 +7,5 @@ export interface Ingredient {
   unit: string
   quantity: number
   reorder_level: number
-  image?: string
+  cost_per_unit: number
 }
