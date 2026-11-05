@@ -11,7 +11,7 @@ export default function AddWorkerModal({
   onSuccess,
 }: {
   onClose: () => void;
-  onSuccess: (email: string) => void;
+  onSuccess: () => void;
 }) {
   const [form, setForm] = useState({
     first_name: '',
@@ -39,7 +39,7 @@ export default function AddWorkerModal({
         password: form.password,
         role: form.role,
       });
-      onSuccess(form.email);
+      onSuccess();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Unable to send the invitation.');
     } finally {
@@ -131,7 +131,7 @@ export default function AddWorkerModal({
             disabled={loading}
             className="rounded-2xl bg-brown px-6 py-3 text-sm font-semibold text-cream shadow-sm transition hover:bg-brown/90 disabled:cursor-wait disabled:opacity-60"
           >
-            {loading ? 'Sending invite...' : 'Add & send invite'}
+            {loading ? 'Adding worker...' : 'Add Worker'}
           </button>
         </div>
       </form>
