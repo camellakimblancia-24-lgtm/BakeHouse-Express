@@ -22,7 +22,7 @@ function LandingPage() {
     try {
       const data = await authApi.login({ email, password });
 
-      localStorage.setItem('bakehouse_auth_token', data.token);
+      localStorage.setItem('bakehouse_auth_token', data.session.access_token);
       localStorage.setItem('bakehouse_user', JSON.stringify(data.user));
 
       navigate('/pantry', { replace: true });
