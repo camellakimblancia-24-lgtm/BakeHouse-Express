@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Mail, RefreshCw, Trash2 } from 'lucide-react';
-import { listWorkers, resendInvite, removeWorker } from '../../api/worker';
+import { Mail, Trash2 } from 'lucide-react';
+import { listWorkers, removeWorker } from '../../api/worker';
 import type { Worker } from '../../types/worker';
 import { ROLE_LABELS } from '../../types/roles';
 import AddWorkerModal from './AddWorkerModal';
@@ -13,7 +13,6 @@ export default function WorkersPage({ initialAddModalOpen = false }: { initialAd
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [msg, setMsg] = useState('');
-  const [resendingId, setResendingId] = useState<string | null>(null);
   const [removingId, setRemovingId] = useState<string | null>(null);
   const [workerToRemove, setWorkerToRemove] = useState<Worker | null>(null);
   const [showAddModal, setShowAddModal] = useState(initialAddModalOpen);
@@ -35,20 +34,6 @@ export default function WorkersPage({ initialAddModalOpen = false }: { initialAd
     }
   }, []);
 
-  const onResend = async (w: Worker) => {
-    setMsg('');
-    setError('');
-    setResendingId(w.id);
-    try {
-      await resendInvite(w.id);
-      setMsg(`Invitation resent to ${w.email}.`);
-    } catch (e) {
-      setError((e as Error).message);
-    } finally {
-      setResendingId(null);
-    }
-  };
-
   const onConfirmRemove = async () => {
     if (!workerToRemove) return;
     const w = workerToRemove;
@@ -66,9 +51,6 @@ export default function WorkersPage({ initialAddModalOpen = false }: { initialAd
       setWorkerToRemove(null);
     }
   };
-
-  const activeCount = workers.filter((worker) => worker.status === 'active').length;
-  const pendingCount = workers.filter((worker) => worker.status === 'pending').length;
 
   const closeAddModal = () => {
     setShowAddModal(false);
@@ -99,14 +81,6 @@ export default function WorkersPage({ initialAddModalOpen = false }: { initialAd
           {!loading && (
             <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-brown/70">
               <span className="font-semibold text-brown">{workers.length} {workers.length === 1 ? 'worker' : 'workers'}</span>
-              <span className="inline-flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-emerald-600" aria-hidden="true" />
-                {activeCount} active
-              </span>
-              <span className="inline-flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-amber-500" aria-hidden="true" />
-                {pendingCount} pending
-              </span>
             </div>
           )}
         </div>
@@ -156,12 +130,6 @@ export default function WorkersPage({ initialAddModalOpen = false }: { initialAd
                       <p className="mt-1 text-sm text-brown/65">{ROLE_LABELS[w.role]}</p>
                     </div>
                   </div>
-                  <span className={`mt-1 inline-flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold ${
-                    w.status === 'active' ? 'bg-emerald-50 text-emerald-800' : 'bg-amber-50 text-amber-800'
-                  }`}>
-                    <span className={`h-1.5 w-1.5 rounded-full ${w.status === 'active' ? 'bg-emerald-600' : 'bg-amber-500'}`} aria-hidden="true" />
-                    {w.status === 'active' ? 'Active' : 'Pending'}
-                  </span>
                 </div>
 
                 <div className="border-t border-brown/10 bg-[#fbf8f2] px-5 py-4">
@@ -171,20 +139,7 @@ export default function WorkersPage({ initialAddModalOpen = false }: { initialAd
                     <span className="truncate">{w.email}</span>
                   </p>
 
-                  <div className="mt-4 flex items-center justify-between gap-2">
-                    {w.status === 'pending' ? (
-                      <button
-                        type="button"
-                        onClick={() => onResend(w)}
-                        disabled={resendingId !== null}
-                        className="inline-flex items-center gap-2 rounded-lg px-2 py-1.5 text-sm font-semibold text-brown transition hover:bg-amber-100 disabled:cursor-wait disabled:opacity-60"
-                      >
-                        <RefreshCw size={14} className={resendingId === w.id ? 'animate-spin' : ''} aria-hidden="true" />
-                        {resendingId === w.id ? 'Sending invite...' : 'Resend invite'}
-                      </button>
-                    ) : (
-                      <span />
-                    )}
+                  <div className="mt-4 flex items-center justify-end gap-2">
                     <button
                       type="button"
                       onClick={() => setWorkerToRemove(w)}

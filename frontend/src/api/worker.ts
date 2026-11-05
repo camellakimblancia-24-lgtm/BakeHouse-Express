@@ -3,10 +3,7 @@ import type { Role, Worker } from '../types/worker';
 const BASE = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
 const MOCK = import.meta.env.VITE_USE_MOCK !== 'false';
 
-let mockWorkers: Worker[] = [
-  { id: '1', full_name: 'Ana Reyes', email: 'ana@example.com', role: 'baker', status: 'active' },
-  { id: '2', full_name: 'Ben Cruz', email: 'ben@example.com', role: 'cashier', status: 'pending' },
-];
+let mockWorkers: Worker[] = [];
 const wait = (ms = 500) => new Promise((r) => setTimeout(r, ms));
 
 async function request(path: string, options: RequestInit = {}) {
