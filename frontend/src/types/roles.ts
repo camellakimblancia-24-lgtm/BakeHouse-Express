@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'react'
 
-export type Role = 'head_manager' | 'baker' | 'cashier'
+export type Role = 'admin' | 'baker' | 'cashier'
 
 export interface StaffUser {
   id: string
@@ -12,25 +12,25 @@ export interface StaffUser {
 }
 
 export const ROLE_LABELS: Record<Role, string> = {
-  head_manager: 'Head Manager',
+  admin: 'Head Manager',
   baker: 'Baker',
   cashier: 'Cashier',
 }
 
 export const ROLE_ACCESS: Record<Role, string[]> = {
-  head_manager: ['/pantry', '/recipes', '/counter', '/logs', '/admin', '/admin/workers'],
+  admin: ['/pantry', '/recipes', '/counter', '/logs', '/admin', '/admin/workers'],
   baker: ['/pantry', '/recipes'],
   cashier: ['/counter'],
 }
 
 export const DEFAULT_ROUTE: Record<Role, string> = {
-  head_manager: '/pantry',
+  admin: '/pantry',
   baker: '/recipes',
   cashier: '/counter',
 }
 
 export const STAFF: StaffUser[] = [
-  { id: "1", email: "kimblanci@example.com", name: 'Kim Blancia', role: 'head_manager', status: "active", initials: 'KB' },
+  { id: "1", email: "kimblanci@example.com", name: 'Kim Blancia', role: 'admin', status: "active", initials: 'KB' },
   { id: "2", email: "chrisciel@example.com", name: 'Chrisciel Catedrilla', role: 'baker', status: "active", initials: 'CC', },
   { id: "3", email: "chloe@example.com", name: 'Chloe Talaman', role: 'cashier', status: "inactive", initials: 'CT' },
 ]

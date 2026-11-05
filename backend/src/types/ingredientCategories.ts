@@ -1,0 +1,1 @@
+export const category = ['DAIRY', 'DRY_GOODS', 'PRODUCE', 'PACKAGING']
