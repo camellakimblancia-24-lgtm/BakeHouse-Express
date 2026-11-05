@@ -24,11 +24,12 @@ async function request(path: string, options: RequestInit = {}) {
   return data;
 }
 
-export async function addWorker(body: { full_name: string; email: string; role: Role }) {
+export async function addWorker(body: { full_name: string; email: string; password: string; role: Role }) {
   if (MOCK) {
     await wait();
     if (mockWorkers.some((w) => w.email === body.email)) throw new Error('Email already exists.');
-    mockWorkers.push({ id: String(Date.now()), ...body, status: 'pending' });
+    const { password: _password, ...worker } = body;
+    mockWorkers.push({ id: String(Date.now()), ...worker, status: 'pending' });
     return {};
   }
   return request('/api/workers', { method: 'POST', body: JSON.stringify(body) });
