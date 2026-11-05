@@ -20,12 +20,14 @@ const badgeStyles: Record<LogType, string> = {
   stock: 'bg-amber-100 text-amber-800',
   batch: 'bg-orange-100 text-orange-800',
   sale: 'bg-emerald-100 text-emerald-800',
+  waste: 'bg-red-100 text-red-700',
 }
 
 const badgeLabels: Record<LogType, string> = {
   stock: 'Stock',
   batch: 'Batch',
   sale: 'Sale',
+  waste: 'Waste',
 }
 
 export default function AdminPage() {

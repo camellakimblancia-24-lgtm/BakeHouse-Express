@@ -10,21 +10,25 @@ import Header from './components/layout/Header'
 
 import { DEFAULT_ROUTE, useRole } from './types/roles'
 import AdminPage from './pages/admin/AdminPage'
+import WorkersPage from './pages/admin/WorkerPage'
+import AdminRoutes from './components/AdminRoutes'
 
 function AppLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-cream via-orange-50 to-rose-100">
+    <div className="min-h-screen bg-linear-to-br from-cream via-orange-50 to-rose-100">
       <Header />
-      <main className="px-8 pb-10">{children}</main>
+      <main className="mx-auto w-full max-w-7xl px-4 pb-12 pt-6 sm:px-8 sm:pt-8 lg:px-10">
+        {children}
+      </main>
     </div>
   )
 }
 
 function Guarded({ path, children }: { path: string; children: ReactNode }) {
+  const { user, canAccess } = useRole() // hook first, before any early return
   const token = localStorage.getItem('bakehouse_auth_token')
-  if (!token) return <Navigate to="/" replace />
 
-  const { user, canAccess } = useRole()
+  if (!token) return <Navigate to="/" replace />
   if (!canAccess(path)) return <Navigate to={DEFAULT_ROUTE[user.role]} replace />
   return <AppLayout>{children}</AppLayout>
 }
@@ -39,7 +43,12 @@ function App() {
           <Route path="/recipes" element={<Guarded path="/recipes"><RecipeBatchingPage /></Guarded>} />
           <Route path="/counter" element={<Guarded path="/counter"><CounterPage /></Guarded>} />
           <Route path="/logs" element={<Guarded path="/logs"><OperationsLogsPage /></Guarded>} />
+
           <Route path="/admin" element={<Guarded path="/admin"><AdminPage /></Guarded>} />
+          <Route element={<AdminRoutes />}>
+            <Route path="/admin/workers" element={<Guarded path="/admin/workers"><WorkersPage /></Guarded>} />
+            <Route path="/admin/workers/new" element={<Guarded path="/admin/workers"><WorkersPage initialAddModalOpen /></Guarded>} />
+          </Route>
         </Routes>
       </RoleProvider>
     </BrowserRouter>

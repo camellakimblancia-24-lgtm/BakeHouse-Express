@@ -1,46 +1,130 @@
 import type { Role } from '../types/roles'
-import { listWorkers, USE_MOCK } from './workers'
 
-const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3000/api'
+const API_URL = 'http://localhost:3000'
 
-export interface AuthUser {
-  fullName: string
-  role: Role
+export interface LoginCredentials {
+  email: string
+  password: string
 }
 
-async function readError(res: Response, fallback: string) {
-  const body = await res.json().catch(() => null)
-  return body?.message ?? fallback
+export interface CreateUserPayload {
+  email: string;
+  password: string;
+  role: Role;
+  first_name: string;
+  last_name: string;
 }
 
-export async function setPassword(token: string, password: string): Promise<void> {
-  if (USE_MOCK) {
-    await new Promise((resolve) => setTimeout(resolve, 500))
-    return
+export interface UpdateUserPayload {
+  password?: string;
+  role?: Role;
+  first_name?: string;
+  last_name?: string;
+}
+
+export interface UserResponse {
+  id: string;
+  email: string;
+  role: Role;
+  first_name: string;
+  last_name: string;
+  created_at?: string;
+}
+
+export const authApi = {
+  async login(credentials: LoginCredentials) {
+    const response = await fetch(`${API_URL}/api/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(credentials),
+    });
+
+    console.log(response)
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || 'Login failed');
+    }
+
+    if (data.session?.access_token) {
+      localStorage.setItem('bakehouse_auth_token', data.session.access_token);
+    }
+
+    return data;
+  },
+
+  async getUsers(token: string): Promise<UserResponse[]> {
+    const response = await fetch(`${API_URL}/auth/users`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || 'Failed to fetch users');
+    }
+
+    return data;
+  },
+
+  async createUser(token: string, payload: CreateUserPayload): Promise<UserResponse> {
+    const response = await fetch(`${API_URL}/auth/users`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || 'Failed to create user');
+    }
+
+    return data;
+  },
+
+  async updateUser(token: string, userId: string, payload: UpdateUserPayload): Promise<UserResponse> {
+    const response = await fetch(`${API_URL}/auth/users/${userId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || 'Failed to update user');
+    }
+
+    return data;
+  },
+
+  async deleteUser(token: string, userId: string): Promise<{ message: string }> {
+    const response = await fetch(`${API_URL}/auth/users/${userId}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || 'Failed to delete user');
+    }
+
+    return data;
   }
-  const res = await fetch(`${API_URL}/auth/set-password`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ token, password }),
-  })
-  if (!res.ok) throw new Error(await readError(res, 'This link is invalid or has expired.'))
-}
-
-export async function login(email: string, password: string): Promise<AuthUser> {
-  if (USE_MOCK) {
-    await new Promise((resolve) => setTimeout(resolve, 500))
-    const workers = await listWorkers()
-    const worker = workers.find((w) => w.email.toLowerCase() === email.trim().toLowerCase())
-    if (!worker || password.length < 8) throw new Error('Incorrect email or password.')
-    return { fullName: worker.fullName, role: worker.role }
-  }
-  const res = await fetch(`${API_URL}/auth/login`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, password }),
-  })
-  if (!res.ok) throw new Error(await readError(res, 'Incorrect email or password.'))
-  const data = await res.json()
-  localStorage.setItem('token', data.token)
-  return data.user
-}
+};

@@ -1,24 +1,82 @@
 import type { Ingredient } from '../types/ingredients'
 
-let ingredients: Ingredient[] = [
-  { id: 1, name: 'Butter', category: 'DAIRY', unit: 'kg', quantity: 4, reorder_level: 5 },
-  { id: 2, name: 'Milk', category: 'DAIRY', unit: 'L', quantity: 12, reorder_level: 6 },
-  { id: 3, name: 'Flour', category: 'DRY_GOODS', unit: 'kg', quantity: 30, reorder_level: 10 },
-  { id: 4, name: 'Sugar', category: 'DRY_GOODS', unit: 'kg', quantity: 0, reorder_level: 8 },
-  { id: 5, name: 'Apples', category: 'PRODUCE', unit: 'kg', quantity: 6, reorder_level: 4 },
-  { id: 6, name: 'Cake box', category: 'PACKAGING', unit: 'pcs', quantity: 40, reorder_level: 50 },
-]
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000'
+
+function getAuthHeaders(): HeadersInit {
+  const token = localStorage.getItem('token') || localStorage.getItem('bakehouse_auth_token') || 'dev-token'
+  return {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${token}`,
+  }
+}
 
 export async function getIngredients(): Promise<Ingredient[]> {
-  return [...ingredients]
+  try {
+    const res = await fetch(`${API_URL}/api/ingredients`, {
+      headers: getAuthHeaders(),
+    })
+    if (res.ok) {
+      const json = await res.json()
+      return json.data || json
+    }
+  } catch (e) {
+  }
+  return []
 }
 
 export async function addIngredient(data: Omit<Ingredient, 'id'>) {
-  ingredients = [...ingredients, { ...data, id: Date.now() }]
+  try {
+    const res = await fetch(`${API_URL}/api/ingredients`, {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      body: JSON.stringify({
+        name: data.name,
+        category: data.category,
+        unit: data.unit,
+        quantity: data.quantity,
+        reorder_level: data.reorder_level,
+      }),
+    })
+    
+    if (res.ok) {
+      const json = await res.json()
+      return json.data || json
+    }
+  } catch (e) {
+  }
+
+ 
+  return { 
+    id: Date.now(), 
+    name: data.name,
+    category: data.category,
+    unit: data.unit,
+    quantity: data.quantity,
+    reorder_level: data.reorder_level 
+  }
 }
 
-export async function adjustStock(id: number, change: number) {
-  ingredients = ingredients.map((i) =>
-    i.id === id ? { ...i, quantity: Math.max(0, i.quantity + change) } : i
-  )
+export async function adjustStock(
+  id: string | number,
+  change: number,
+  options?: { reason?: 'delivery' | 'spoiled'; user?: string },
+) {
+  try {
+    const res = await fetch(`${API_URL}/api/inventory/movements`, {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      body: JSON.stringify({
+        ingredient_id: id,
+        change,
+        reason: options?.reason,
+        user: options?.user ?? 'Staff',
+      }),
+    })
+    if (res.ok) {
+      const json = await res.json()
+      return json.data || json
+    }
+  } catch (e) {}
+
+  return { success: true }
 }

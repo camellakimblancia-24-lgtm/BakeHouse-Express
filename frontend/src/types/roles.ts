@@ -18,7 +18,7 @@ export const ROLE_LABELS: Record<Role, string> = {
 }
 
 export const ROLE_ACCESS: Record<Role, string[]> = {
-  head_manager: ['/pantry', '/recipes', '/counter', '/logs','/admin'],
+  head_manager: ['/pantry', '/recipes', '/counter', '/logs', '/admin', '/admin/workers'],
   baker: ['/pantry', '/recipes'],
   cashier: ['/counter'],
 }
