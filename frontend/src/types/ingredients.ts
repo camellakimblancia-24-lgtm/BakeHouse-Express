@@ -1,7 +1,7 @@
 export type Category = 'DAIRY' | 'DRY_GOODS' | 'PRODUCE' | 'PACKAGING'
 
 export interface Ingredient {
-  id: number
+  id: string | number
   name: string
   category: Category
   unit: string
