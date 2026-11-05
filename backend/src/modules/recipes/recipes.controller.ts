@@ -23,7 +23,13 @@ export async function getOne(req: any, res: Response) {
 export async function create(req: any, res: Response) {
   try {
     const validatedData = recipeSchema.parse(req.body)
-    const data = await service.createRecipe(req.token, validatedData)
+    const { description, instructions, ...requiredData } = validatedData
+    const recipeInput = {
+      ...requiredData,
+      ...(description !== undefined ? { description } : {}),
+      ...(instructions !== undefined ? { instructions } : {}),
+    }
+    const data = await service.createRecipe(req.token, recipeInput)
     return res.status(201).json({
       success: true,
       message: `Recipe ${data.name} created successfully.`,
@@ -37,7 +43,16 @@ export async function create(req: any, res: Response) {
 export async function update(req: any, res: Response) {
   try {
     const validatedData = updateRecipeSchema.parse(req.body)
-    const data = await service.updateRecipe(req.token, req.params.id, validatedData)
+    const { name, description, servings, instructions, ingredients, ...rest } = validatedData
+    const recipeInput = {
+      ...rest,
+      ...(name !== undefined ? { name } : {}),
+      ...(description !== undefined ? { description } : {}),
+      ...(servings !== undefined ? { servings } : {}),
+      ...(instructions !== undefined ? { instructions } : {}),
+      ...(ingredients !== undefined ? { ingredients } : {}),
+    }
+    const data = await service.updateRecipe(req.token, req.params.id, recipeInput)
     return res.status(200).json({
       success: true,
       message: `Recipe ${data.name} updated successfully.`,
