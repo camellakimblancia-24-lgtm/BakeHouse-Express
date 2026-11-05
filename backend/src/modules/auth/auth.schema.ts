@@ -25,6 +25,7 @@ export const updateUserSchema = z.object({
 
 export const userIdParamSchema = z.object({
   id: z.string().uuid('Invalid user UUID'),
+  
 });
 
 export type LoginInput = z.infer<typeof loginSchema>;

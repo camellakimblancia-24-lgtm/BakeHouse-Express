@@ -1,16 +1,7 @@
 import { supabaseForUser } from '../../lib/supabaseClient.js'
 import { AppError } from '../../middleware/errorHandler.js'
 import { convert } from '../../lib/units.js'
-
-type Movement = {
-  ingredient_id: string
-  type: 'restock' | 'usage' | 'adjustment'
-  quantity: number
-  note?: string
-  supplier_id?: string
-}
-
-type Settings = { reorder_level?: number; supplier_id?: string | null }
+import type { MovementInput, SettingsInput } from './inventory.schema.js'
 
 const SELECT = '*, suppliers(name)'
 
@@ -42,7 +33,7 @@ export async function listMovements(token: string, ingredientId?: string) {
   return data
 }
 
-export async function recordMovement(token: string, input: Movement) {
+export async function recordMovement(token: string, input: MovementInput) {
   const { data, error } = await supabaseForUser(token).rpc('record_stock_movement', {
     p_ingredient_id: input.ingredient_id,
     p_type: input.type,
@@ -60,7 +51,7 @@ export async function recordMovement(token: string, input: Movement) {
   return data
 }
 
-export async function updateSettings(token: string, id: string, input: Settings) {
+export async function updateSettings(token: string, id: string, input: SettingsInput) {
   const { data, error } = await supabaseForUser(token)
     .from('ingredients').update(input).eq('id', id).select(SELECT).single()
   if (error) throw new AppError(400, error.message, 'UPDATE_FAILED')

@@ -13,7 +13,6 @@ export const movementSchema = z
     path: ['quantity'],
   })
 
-// The shape the frontend sends: a signed change plus a reason
 const frontendMovement = z
   .object({
     ingredient_id: z.string().uuid(),
@@ -39,3 +38,6 @@ export const settingsSchema = z.object({
   reorder_level: z.number().nonnegative().optional(),
   supplier_id: z.string().uuid().nullable().optional(),
 })
+
+export type MovementInput = z.infer<typeof movementSchema>
+export type SettingsInput = z.infer<typeof settingsSchema>
