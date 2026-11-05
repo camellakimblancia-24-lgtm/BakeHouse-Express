@@ -22,7 +22,11 @@ function getAlerts(ingredients: Ingredient[]): StockAlert[] {
 }
 
 export default function Header() {
-  const { user, canAccess } = useRole()
+
+  const storedUser = localStorage.getItem("bakehouse_user")
+  const current_user = storedUser ? JSON.parse(storedUser) : null
+  
+  const {user, canAccess} = useRole()
   const navigate = useNavigate()
   const [menuOpen, setMenuOpen] = useState(false)
   const [bellOpen, setBellOpen] = useState(false)
@@ -64,10 +68,11 @@ export default function Header() {
   }
 
   return (
-    <header className="mx-auto flex w-full max-w-7xl flex-wrap items-center gap-3 px-4 py-4 sm:px-8 sm:py-5 lg:px-10 xl:gap-4">
-      <div className="order-1 flex min-w-0 items-center gap-3">
+    <header className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-8 sm:py-5 lg:px-10">
+      {}
+      <div className="flex shrink-0 items-center gap-3">
         <MobileNavMenu />
-        <img src={logo} alt="BakeHouse Express logo" className="h-9 w-9 shrink-0 rounded-full object-cover sm:h-20 sm:w-20" />
+        <img src={logo} alt="BakeHouse Express logo" className="h-9 w-9 shrink-0 rounded-full object-cover sm:h-12 sm:w-12" />
         <span className="truncate text-base font-extrabold uppercase tracking-wide text-brown sm:text-xl">
           BakeHouse Express
         </span>
@@ -152,11 +157,11 @@ export default function Header() {
             className="flex items-center gap-3 rounded-full bg-white/60 p-1.5 shadow-sm ring-1 ring-brown/10 backdrop-blur transition hover:bg-white sm:pr-4"
           >
             <span className="flex h-9 w-9 items-center justify-center rounded-full bg-brown text-sm font-bold text-cream">
-              {user.initials}
+              {current_user.first_name[0]+current_user.last_name[0]}
             </span>
             <span className="hidden text-left leading-tight sm:block">
-              <span className="block text-sm font-semibold text-brown">{user.name}</span>
-              <span className="block text-xs text-brown/60">{ROLE_LABELS[user.role]}</span>
+              <span className="block text-sm font-semibold text-brown">{current_user.first_name + " " + current_user.last_name}</span>
+              <span className="block text-xs text-brown/60">{ROLE_LABELS[current_user.role]}</span>
             </span>
             <ChevronDown size={16} className="hidden text-brown/60 sm:block" />
           </button>
@@ -171,8 +176,8 @@ export default function Header() {
               <div className="absolute right-0 z-20 mt-2 w-56 rounded-2xl bg-white p-2 shadow-lg ring-1 ring-brown/10">
                 <div className="px-3 py-2">
                   <p className="text-xs font-semibold uppercase tracking-wide text-brown/60">Signed in as</p>
-                  <p className="truncate text-sm font-semibold text-brown">{user.name}</p>
-                  <p className="text-xs text-brown/60">{ROLE_LABELS[user.role]}</p>
+                  <p className="truncate text-sm font-semibold text-brown">{current_user.first_name + " " + current_user.last_name}</p>
+                  <p className="text-xs text-brown/60">{ROLE_LABELS[current_user.role]}</p>
                 </div>
                 <div className="mt-1 border-t border-brown/10 pt-1">
                   <button

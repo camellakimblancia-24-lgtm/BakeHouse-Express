@@ -6,6 +6,7 @@ const CUSTOM_KEY = 'bakehouse-recipes-custom'
 const BATCH_KEY = 'bakehouse-batch-logs'
 const DELETED_KEY = 'bakehouse-recipes-deleted'
 
+const seedRecipes: Recipe[] = []
 
 function read<T>(key: string): T[] {
   try {
@@ -38,8 +39,8 @@ async function toStorableImage(url: string | undefined): Promise<string | undefi
 }
 
 export async function getRecipes(): Promise<Recipe[]> {
-  // const deleted = read<number>(DELETED_KEY)
-  // return [...seedRecipes, ...read<Recipe>(CUSTOM_KEY)].filter((r) => !deleted.includes(r.id))
+  const deleted = read<number>(DELETED_KEY)
+  return [...seedRecipes, ...read<Recipe>(CUSTOM_KEY)].filter((r) => !deleted.includes(r.id))
 }
 
 export async function addRecipe(data: Omit<Recipe, 'id'>) {
