@@ -3,7 +3,7 @@ import { addWorker } from '../../api/worker';
 import Modal from '../../components/ui/Modal';
 import { ROLE_LABELS, type Role } from '../../types/roles';
 
-const ROLES: Role[] = ['head_manager', 'baker', 'cashier'];
+const ROLES: Role[] = ['admin', 'baker', 'cashier'];
 const MIN_PASSWORD_LENGTH = 8;
 
 export default function AddWorkerModal({
@@ -34,10 +34,11 @@ export default function AddWorkerModal({
     setLoading(true);
     try {
       await addWorker({
-        full_name: `${form.first_name.trim()} ${form.last_name.trim()}`,
         email: form.email,
         password: form.password,
         role: form.role,
+        first_name: form.first_name.trim(),
+        last_name: form.last_name.trim(),
       });
       onSuccess();
     } catch (err) {

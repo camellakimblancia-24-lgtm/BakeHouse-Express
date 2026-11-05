@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Mail, Trash2 } from 'lucide-react';
-import { listWorkers, removeWorker } from '../../api/worker';
-import type { Worker } from '../../types/worker';
+import { listWorkers, removeWorker } from '../../api/workers';
+import type { Worker } from '../../api/workers';
 import { ROLE_LABELS } from '../../types/roles';
 import AddWorkerModal from './AddWorkerModal';
 
@@ -43,7 +43,7 @@ export default function WorkersPage({ initialAddModalOpen = false }: { initialAd
     try {
       await removeWorker(w.id);
       setWorkers((prev) => prev.filter((x) => x.id !== w.id));
-      setMsg(`${w.full_name} has been removed.`);
+      setMsg(`${w.first_name} ${w.last_name} has been removed.`);
     } catch (e) {
       setError((e as Error).message);
     } finally {
@@ -109,7 +109,7 @@ export default function WorkersPage({ initialAddModalOpen = false }: { initialAd
       ) : workers.length > 0 ? (
         <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
           {workers.map((w) => {
-            const initials = w.full_name
+            const initials = `${w.first_name} ${w.last_name}`
               .trim()
               .split(/\s+/)
               .filter(Boolean)
@@ -126,7 +126,7 @@ export default function WorkersPage({ initialAddModalOpen = false }: { initialAd
                       {initials || '?'}
                     </div>
                     <div className="min-w-0">
-                      <h2 className="truncate font-bold text-brown">{w.full_name}</h2>
+                      <h2 className="truncate font-bold text-brown">{`${w.first_name} ${w.last_name}`}</h2>
                       <p className="mt-1 text-sm text-brown/65">{ROLE_LABELS[w.role]}</p>
                     </div>
                   </div>
@@ -162,7 +162,7 @@ export default function WorkersPage({ initialAddModalOpen = false }: { initialAd
           <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl">
             <h2 className="text-lg font-bold text-brown">Remove worker?</h2>
             <p className="mt-2 text-sm text-brown/70">
-              <span className="font-semibold text-brown">{workerToRemove.full_name}</span> will lose access to
+              <span className="font-semibold text-brown">{`${workerToRemove.first_name} ${workerToRemove.last_name}`}</span> will lose access to
               BakeHouse Express. This can't be undone.
             </p>
             <div className="mt-6 flex justify-end gap-3">
