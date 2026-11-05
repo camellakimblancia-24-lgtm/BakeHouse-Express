@@ -59,12 +59,12 @@ export default function WorkersPage({ initialAddModalOpen = false }: { initialAd
     }
   };
 
-  const onWorkerAdded = async (email: string) => {
+  const onWorkerAdded = async () => {
     setShowAddModal(false);
     if (location.pathname === '/admin/workers/new') {
       navigate('/admin/workers', { replace: true });
     }
-    setMsg(`Invitation sent to ${email}.`);
+    setMsg('Worker added successfully.');
     setError('');
     try {
       setWorkers(await listWorkers());
