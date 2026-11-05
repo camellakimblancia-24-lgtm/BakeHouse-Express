@@ -39,8 +39,6 @@ export const authApi = {
       body: JSON.stringify(credentials),
     });
 
-    console.log(response)
-
     const data = await response.json();
 
     if (!response.ok) {
@@ -48,6 +46,8 @@ export const authApi = {
     }
 
     if (data.session?.access_token) {
+      // 🚨 FIXED: Save as both 'token' and 'bakehouse_auth_token' so everything works
+      localStorage.setItem('token', data.session.access_token);
       localStorage.setItem('bakehouse_auth_token', data.session.access_token);
     }
 
@@ -55,6 +55,7 @@ export const authApi = {
   },
 
   async getUsers(token: string): Promise<UserResponse[]> {
+    // ... (rest of the file stays exactly the same)
     const response = await fetch(`${API_URL}/auth/users`, {
       method: 'GET',
       headers: {
