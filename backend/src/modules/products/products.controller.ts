@@ -1,30 +1,67 @@
 import type { Response } from 'express'
-import { productSchema, productUpdateSchema } from './products.schema.js'
+import { productSchema, updateProductSchema } from './products.schema.js'
 import * as service from './products.service.js'
 
 export async function list(req: any, res: Response) {
-  res.json({ data: await service.listProducts(req.token) })
+  try {
+    const data = await service.listProducts(req.token)
+    return res.status(200).json({ success: true, data })
+  } catch (err: unknown) {
+    return res.status(400).json({ success: false, message: (err as Error).message })
+  }
 }
 
 export async function getOne(req: any, res: Response) {
-  res.json({ data: await service.getProduct(req.token, req.params.id) })
+  try {
+    const data = await service.getProduct(req.token, req.params.id)
+    return res.status(200).json({ success: true, data })
+  } catch (err: unknown) {
+    return res.status(404).json({ success: false, message: (err as Error).message })
+  }
 }
 
 export async function create(req: any, res: Response) {
-  const input = productSchema.parse(req.body)
-  res.status(201).json({ data: await service.createProduct(req.token, input) })
+  try {
+    const validatedData = productSchema.parse(req.body)
+    const data = await service.createProduct(req.token, validatedData)
+    return res.status(201).json({
+      success: true,
+      message: `Product ${data.name} created successfully.`,
+      data,
+    })
+  } catch (err: unknown) {
+    return res.status(400).json({ success: false, message: (err as Error).message })
+  }
 }
 
 export async function update(req: any, res: Response) {
-  const input = productUpdateSchema.parse(req.body)
-  res.json({ data: await service.updateProduct(req.token, req.params.id, input) })
+  try {
+    const validatedData = updateProductSchema.parse(req.body)
+    const data = await service.updateProduct(req.token, req.params.id, validatedData)
+    return res.status(200).json({
+      success: true,
+      message: `Product ${data.name} updated successfully.`,
+      data,
+    })
+  } catch (err: unknown) {
+    return res.status(400).json({ success: false, message: (err as Error).message })
+  }
 }
 
 export async function remove(req: any, res: Response) {
-  await service.deleteProduct(req.token, req.params.id)
-  res.status(204).send()
+  try {
+    await service.deleteProduct(req.token, req.params.id)
+    return res.status(200).json({ success: true, message: 'Product deleted successfully.' })
+  } catch (err: unknown) {
+    return res.status(400).json({ success: false, message: (err as Error).message })
+  }
 }
 
 export async function canMake(req: any, res: Response) {
-  res.json({ data: await service.getCanMake(req.token, req.params.id) })
+  try {
+    const data = await service.getCanMake(req.token, req.params.id)
+    return res.status(200).json({ success: true, data })
+  } catch (err: unknown) {
+    return res.status(400).json({ success: false, message: (err as Error).message })
+  }
 }
