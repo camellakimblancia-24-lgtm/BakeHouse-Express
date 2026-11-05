@@ -15,7 +15,7 @@ const card = 'rounded-3xl bg-white/60 shadow-sm ring-1 ring-brown/10 backdrop-bl
 
 export default function RecipeBatchingPage() {
   const { user } = useRole()
-  const canDelete = user.role === 'head_manager'
+  const canDelete = user.role === 'admin'
 
   const [tab, setTab] = useState<'recipes' | 'log'>('recipes')
   const [recipes, setRecipes] = useState<Recipe[]>([])
