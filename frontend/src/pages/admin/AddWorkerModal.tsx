@@ -4,6 +4,7 @@ import Modal from '../../components/ui/Modal';
 import { ROLE_LABELS, type Role } from '../../types/roles';
 
 const ROLES: Role[] = ['head_manager', 'baker', 'cashier'];
+const MIN_PASSWORD_LENGTH = 8;
 
 export default function AddWorkerModal({
   onClose,
@@ -12,16 +13,32 @@ export default function AddWorkerModal({
   onClose: () => void;
   onSuccess: (email: string) => void;
 }) {
-  const [form, setForm] = useState({ full_name: '', email: '', role: 'baker' as Role });
+  const [form, setForm] = useState({
+    first_name: '',
+    last_name: '',
+    email: '',
+    password: '',
+    role: 'baker' as Role,
+  });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError('');
+
+    if (form.password.length < MIN_PASSWORD_LENGTH) {
+      return setError(`Password must be at least ${MIN_PASSWORD_LENGTH} characters.`);
+    }
+
     setLoading(true);
     try {
-      await addWorker(form);
+      await addWorker({
+        full_name: `${form.first_name.trim()} ${form.last_name.trim()}`,
+        email: form.email,
+        password: form.password,
+        role: form.role,
+      });
       onSuccess(form.email);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Unable to send the invitation.');
@@ -32,28 +49,57 @@ export default function AddWorkerModal({
 
   return (
     <Modal title="Hire A Worker!" onClose={onClose}>
-     
       <form onSubmit={onSubmit} className="space-y-4">
-        <label className="block space-y-2 text-sm font-semibold text-brown">
-          Full name
-          <input
-            required
-            autoFocus
-            value={form.full_name}
-            onChange={(e) => setForm({ ...form, full_name: e.target.value })}
-            placeholder="Enter their full name"
-            className="w-full rounded-2xl bg-white px-4 py-3 font-normal ring-1 ring-brown/10 outline-none placeholder:text-brown/40 focus:ring-2 focus:ring-brown/30"
-          />
-        </label>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <label className="block space-y-2 text-sm font-semibold text-brown">
+            First name
+            <input
+              required
+              autoFocus
+              autoComplete="given-name"
+              value={form.first_name}
+              onChange={(e) => setForm({ ...form, first_name: e.target.value })}
+              placeholder="Enter first name"
+              className="w-full rounded-2xl bg-white px-4 py-3 font-normal ring-1 ring-brown/10 outline-none placeholder:text-brown/40 focus:ring-2 focus:ring-brown/30"
+            />
+          </label>
+
+          <label className="block space-y-2 text-sm font-semibold text-brown">
+            Last name
+            <input
+              required
+              autoComplete="family-name"
+              value={form.last_name}
+              onChange={(e) => setForm({ ...form, last_name: e.target.value })}
+              placeholder="Enter last name"
+              className="w-full rounded-2xl bg-white px-4 py-3 font-normal ring-1 ring-brown/10 outline-none placeholder:text-brown/40 focus:ring-2 focus:ring-brown/30"
+            />
+          </label>
+        </div>
 
         <label className="block space-y-2 text-sm font-semibold text-brown">
           Email
           <input
             type="email"
             required
+            autoComplete="off"
             value={form.email}
             onChange={(e) => setForm({ ...form, email: e.target.value })}
             placeholder="Enter their email address"
+            className="w-full rounded-2xl bg-white px-4 py-3 font-normal ring-1 ring-brown/10 outline-none placeholder:text-brown/40 focus:ring-2 focus:ring-brown/30"
+          />
+        </label>
+
+        <label className="block space-y-2 text-sm font-semibold text-brown">
+          Password
+          <input
+            type="password"
+            required
+            minLength={MIN_PASSWORD_LENGTH}
+            autoComplete="new-password"
+            value={form.password}
+            onChange={(e) => setForm({ ...form, password: e.target.value })}
+            placeholder="Create a password (min. 8 characters)"
             className="w-full rounded-2xl bg-white px-4 py-3 font-normal ring-1 ring-brown/10 outline-none placeholder:text-brown/40 focus:ring-2 focus:ring-brown/30"
           />
         </label>
