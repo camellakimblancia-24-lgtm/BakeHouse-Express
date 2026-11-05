@@ -119,23 +119,16 @@ export default function PantryPage() {
         </table>
       </div>
 
-      {showAdd && (
-        <IngredientForm
-          onClose={() => setShowAdd(false)}
-          onSave={async (data) => { await addIngredient(data); setShowAdd(false); load() }}
-        />
-      )}
-      {adjusting && (
-        <StockAdjustModal
-          ingredient={adjusting}
-          onClose={() => setAdjusting(null)}
-          onSave={async (change, reason) => {
-            await adjustStock(adjusting.id, change, { reason, user: user.name })
-            setAdjusting(null)
-            load()
-          }}
-        />
-      )}
+  {showAdd && (
+  <IngredientForm
+    onClose={() => setShowAdd(false)}
+    onSave={async (data) => { 
+      await addIngredient(data); 
+      setShowAdd(false); 
+      load() 
+    }}
+  />
+)}
     </div>
   )
 }

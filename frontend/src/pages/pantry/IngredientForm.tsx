@@ -5,7 +5,7 @@ import type { Category, Ingredient } from '../../types/ingredients'
 const inputClass = 'w-full rounded-lg border border-brown/30 bg-white px-3 py-2'
 
 export default function IngredientForm({ onSave, onClose }: {
-  onSave: (data: Omit<Ingredient, 'id'>) => void
+  onSave: (data: Omit<Ingredient, 'id'>) => Promise<void> | void
   onClose: () => void
 }) {
   const [name, setName] = useState('')
@@ -15,12 +15,35 @@ export default function IngredientForm({ onSave, onClose }: {
   const [reorder, setReorder] = useState(0)
   const [costPerUnit, setCostPerUnit] = useState(0)
   const [error, setError] = useState('')
-  
+  const [saving, setSaving] = useState(false)
 
-  const submit = () => {
+  // 🚨 FIX: Added 'e' and preventDefault() so the page doesn't reload
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault() 
+    
+    if (saving) return
+    setError('')
+
     if (!name.trim()) return setError('Name is required')
-    if (quantity < 0 || reorder < 0 || costPerUnit < 0 ) return setError('Numbers cannot be negative')
-    onSave({ name: name.trim(), category, unit, quantity, reorder_level: reorder, cost_per_unit: costPerUnit })
+    if (quantity < 0 || reorder < 0 || costPerUnit < 0) return setError('Numbers cannot be negative')
+
+    try {
+      setSaving(true)
+      // Call the parent's save function
+      await onSave({ 
+        name: name.trim(), 
+        category, 
+        unit, 
+        quantity, 
+        reorder_level: reorder, 
+        cost_per_unit: costPerUnit 
+      })
+      onClose() // Close the modal on success
+    } catch (err: any) {
+      setError(err.message || 'Failed to save ingredient')
+    } finally {
+      setSaving(false)
+    }
   }
 
   return (
@@ -64,8 +87,13 @@ export default function IngredientForm({ onSave, onClose }: {
         </div>
 
         {error && <p className="text-sm text-red-600">{error}</p>}
-        <button type="submit" className="w-full rounded-lg bg-brown py-2 font-semibold text-cream">
-          Save
+        
+        <button 
+          type="submit" 
+          disabled={saving} 
+          className="w-full rounded-lg bg-brown py-2 font-semibold text-cream disabled:opacity-50"
+        >
+          {saving ? 'Saving...' : 'Save'}
         </button>
       </form>
     </Modal>
