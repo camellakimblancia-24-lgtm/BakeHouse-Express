@@ -23,7 +23,14 @@ export async function getOne(req: any, res: Response) {
 export async function create(req: any, res: Response) {
   try {
     const validatedData = productSchema.parse(req.body)
-    const data = await service.createProduct(req.token, validatedData)
+    const data = await service.createProduct(req.token, {
+      name: validatedData.name,
+      price: validatedData.price,
+      ...(validatedData.description !== undefined && { description: validatedData.description }),
+      ...(validatedData.category !== undefined && { category: validatedData.category }),
+      ...(validatedData.recipe_id !== undefined && { recipe_id: validatedData.recipe_id }),
+      ...(validatedData.is_available !== undefined && { is_available: validatedData.is_available }),
+    })
     return res.status(201).json({
       success: true,
       message: `Product ${data.name} created successfully.`,
@@ -37,7 +44,14 @@ export async function create(req: any, res: Response) {
 export async function update(req: any, res: Response) {
   try {
     const validatedData = updateProductSchema.parse(req.body)
-    const data = await service.updateProduct(req.token, req.params.id, validatedData)
+    const data = await service.updateProduct(req.token, req.params.id, {
+      ...(validatedData.name !== undefined && { name: validatedData.name }),
+      ...(validatedData.price !== undefined && { price: validatedData.price }),
+      ...(validatedData.description !== undefined && { description: validatedData.description }),
+      ...(validatedData.category !== undefined && { category: validatedData.category }),
+      ...(validatedData.recipe_id !== undefined && { recipe_id: validatedData.recipe_id }),
+      ...(validatedData.is_available !== undefined && { is_available: validatedData.is_available }),
+    })
     return res.status(200).json({
       success: true,
       message: `Product ${data.name} updated successfully.`,

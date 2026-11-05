@@ -23,7 +23,10 @@ export async function getOne(req: any, res: Response) {
 export async function create(req: any, res: Response) {
   try {
     const validatedData = orderSchema.parse(req.body)
-    const data = await service.createOrder(req.token, validatedData)
+    const createData = validatedData.notes === undefined
+      ? { customer_name: validatedData.customer_name, items: validatedData.items }
+      : { customer_name: validatedData.customer_name, notes: validatedData.notes, items: validatedData.items }
+    const data = await service.createOrder(req.token, createData)
     return res.status(201).json({
       success: true,
       message: 'Order created successfully.',
@@ -37,7 +40,12 @@ export async function create(req: any, res: Response) {
 export async function update(req: any, res: Response) {
   try {
     const validatedData = updateOrderSchema.parse(req.body)
-    const data = await service.updateOrder(req.token, req.params.id, validatedData)
+    const updateData = {
+      ...(validatedData.customer_name !== undefined && { customer_name: validatedData.customer_name }),
+      ...(validatedData.notes !== undefined && { notes: validatedData.notes }),
+      ...(validatedData.status !== undefined && { status: validatedData.status }),
+    }
+    const data = await service.updateOrder(req.token, req.params.id, updateData)
     return res.status(200).json({
       success: true,
       message: 'Order updated successfully.',
